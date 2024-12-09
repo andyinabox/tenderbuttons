@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>tender buttons</title>
+
+    <meta name="description" content="{{ .Sentence }}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="/assets/styles.css" />
+
+  </head>
+  <body id="index">
+
+    <form method="post" action="/">
+      {{- range $tok := .Tokens }}
+      <input type="submit" name="token" value="{{ $tok }}" />
+      {{- end}}
+    </form>
+
+    <a class="about-link" href="/about">❓</a>
+    
+  </body>
+</html>

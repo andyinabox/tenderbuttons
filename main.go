@@ -2,6 +2,8 @@ package main
 
 import (
 	"embed"
+	"flag"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -31,6 +33,11 @@ type aboutContext struct {
 }
 
 func main() {
+	var port int
+	var host string
+
+	flag.IntVar(&port, "p", 8080, "webserver port")
+	flag.StringVar(&host, "h", "localhost", "webserverhost")
 
 	// compile templates
 	tpl, err := template.New("").ParseFS(templates, "tmpl/*.tmpl")
@@ -44,7 +51,7 @@ func main() {
 
 	// create server
 	server := &http.Server{
-		Addr: ":8080",
+		Addr: fmt.Sprintf("%s:%d", host, port),
 		Handler: handler.New(
 
 			// config assets filesystem server
@@ -104,6 +111,7 @@ func main() {
 		),
 	}
 
+	log.Printf("starting server at http://%s:%d", host, port)
 	err = server.ListenAndServe()
 	if err != nil {
 		panic(err)

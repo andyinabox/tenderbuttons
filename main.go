@@ -42,7 +42,7 @@ func main() {
 	var host string
 
 	flag.IntVar(&port, "p", 8080, "webserver port")
-	flag.StringVar(&host, "h", "localhost", "webserverhost")
+	flag.StringVar(&host, "h", "", "webserverhost")
 
 	// compile templates
 	tpl, err := template.New("").ParseFS(templates, "tmpl/*.tmpl")
@@ -120,7 +120,11 @@ func main() {
 		),
 	}
 
-	log.Printf("starting server at http://%s:%d", host, port)
+	displayHost := host
+	if displayHost == "" {
+		displayHost = "localhost"
+	}
+	log.Printf("starting server at http://%s:%d", displayHost, port)
 	err = server.ListenAndServe()
 	if err != nil {
 		panic(err)

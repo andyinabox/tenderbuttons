@@ -1,10 +1,6 @@
 .PHONY: run
 run:
-	go run .
-
-.PHONY: watch
-watch:
-	reflex -d fancy -s make run
+	reflex -d fancy -s go run .
 
 .PHONY: docker-build
 docker-build:

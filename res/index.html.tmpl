@@ -17,19 +17,30 @@
         background: rgb(255,248,223);
         background: radial-gradient(circle, rgba(255,248,223,1) 0%, rgba(195,164,138,1) 35%, rgba(255,247,223,1) 100%); 
         height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
       }
 
-      button {
+      form {
+        max-width: 50%;
+      }
+
+      input {
         cursor: pointer;
         font-size: 1rem;
+        margin-bottom: .25em;
       }
     </style>
   </head>
   <body>
 
-    {{- range $tok := .Tokens }}
-    <button onclick="window.location.reload()">{{ $tok }}</button>
-    {{- end}}
+    <form method="post">
+      {{- range $tok := .Tokens }}
+      <input type="submit" name="token" value="{{ $tok }}" />
+      {{- end}}
+    </form>
     
   </body>
 </html>

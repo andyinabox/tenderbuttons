@@ -13,12 +13,12 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
   margin: 0;
   padding: 0;
 }
 body#index {
   height: 100vh;
+  text-align: center;
 }
 
 body#about {
@@ -46,6 +46,11 @@ section.about {
   background: rgba(255, 255, 255, 0.5);
   padding: 0 1rem;
   margin: 1rem;
+  font-size: 0.8rem;
+}
+
+section.about h1 {
+  display: none;
 }
 
 a.about-link {

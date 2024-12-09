@@ -11,6 +11,7 @@ import (
 
 	"github.com/andyinaobox/tenderbuttons/pkg/chains"
 	"github.com/andyinaobox/tenderbuttons/pkg/handler"
+	"github.com/russross/blackfriday/v2"
 )
 
 //go:embed tmpl/*
@@ -22,6 +23,9 @@ var assets embed.FS
 //go:embed corpus/tb.txt
 var corpus string
 
+//go:embed README.md
+var readme []byte
+
 const maxWords = 100
 
 type indexContext struct {
@@ -30,6 +34,7 @@ type indexContext struct {
 }
 
 type aboutContext struct {
+	Body template.HTML
 }
 
 func main() {
@@ -48,6 +53,8 @@ func main() {
 	// create markov chain
 	chain := chains.NewChain(2)
 	chain.BuildFromString(corpus)
+
+	about := blackfriday.Run(readme)
 
 	// create server
 	server := &http.Server{
@@ -101,7 +108,9 @@ func main() {
 					Path: "/about",
 					HandlerFunc: func(w http.ResponseWriter, r *http.Request) {
 						log.Println("about handler")
-						err := tpl.ExecuteTemplate(w, "about.html.tmpl", aboutContext{})
+						err := tpl.ExecuteTemplate(w, "about.html.tmpl", aboutContext{
+							Body: template.HTML(about),
+						})
 						if err != nil {
 							w.WriteHeader(http.StatusInternalServerError)
 						}

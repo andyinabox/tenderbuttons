@@ -18,6 +18,7 @@ var index string
 var corpus string
 
 const tmplName = "index"
+const maxWords = 100
 
 type position struct {
 	X int
@@ -58,7 +59,21 @@ func main() {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 
-		sentence := chain.Generate(100)
+		r.ParseForm()
+
+		var sentence string
+		tok, ok := r.Form["token"]
+		if ok && tok[0] != "" {
+			log.Printf("generating new sentence from %q\n", tok[0])
+			sentence = chain.GenerateFromToken(tok[0], maxWords)
+		}
+
+		if sentence == "" {
+			log.Println("generate new sentence from scratch")
+			sentence = chain.Generate(maxWords)
+		}
+
+		log.Printf("sentence: %q\n", sentence)
 
 		rc := renderContext{
 			Sentence: sentence,

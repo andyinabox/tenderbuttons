@@ -15,12 +15,13 @@ import (
 type Chain struct {
 	chain         map[string][]string
 	startPrefixes []Prefix
+	prefixLookup  map[string][]Prefix // used to lookup a prefix by first term
 	prefixLen     int
 }
 
 // NewChain returns a new Chain with prefixes of prefixLen words.
 func NewChain(prefixLen int) *Chain {
-	return &Chain{make(map[string][]string), make([]Prefix, 0), prefixLen}
+	return &Chain{make(map[string][]string), make([]Prefix, 0), make(map[string][]Prefix), prefixLen}
 }
 
 // Build reads text from the provided Reader and
@@ -40,10 +41,15 @@ func (c *Chain) Build(r io.Reader) {
 	}
 
 	// create collection of starting prefixes
-	for prefix := range c.chain {
+	for prefixStr := range c.chain {
+		p := NewPrefix(prefixStr)
+		key := []string(p)[0]
+
+		c.prefixLookup[key] = append(c.prefixLookup[key], p)
+
 		// true if first letter is capitalized
-		if unicode.IsUpper([]rune(prefix)[0]) {
-			c.startPrefixes = append(c.startPrefixes, NewPrefix(prefix))
+		if unicode.IsUpper([]rune(prefixStr)[0]) {
+			c.startPrefixes = append(c.startPrefixes, p)
 		}
 	}
 }
@@ -55,8 +61,22 @@ func (c *Chain) BuildFromString(s string) {
 // Generate returns a string of at most n words generated from Chain.
 func (c *Chain) Generate(n int) string {
 	p := c.getStartPrefix()
-	words := []string(p)
+	return c.generate(n, p, []string(p))
+}
 
+func (c *Chain) GenerateFromToken(tok string, n int) string {
+	var p Prefix
+	prefixes, ok := c.prefixLookup[tok]
+	if ok && len(prefixes) > 0 {
+		p = prefixes[rand.Intn(len(prefixes))]
+	} else {
+		p = c.getStartPrefix()
+	}
+
+	return c.generate(n, p, []string(p))
+}
+
+func (c *Chain) generate(n int, p Prefix, words []string) string {
 	for i := 0; i < n; i++ {
 		choices := c.chain[p.String()]
 		if len(choices) == 0 {

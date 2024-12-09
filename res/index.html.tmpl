@@ -10,6 +10,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <style>
+
+
+
       html {
         font-size: calc(75% + 2vw);
       }
@@ -21,17 +24,70 @@
         align-items: center;
         justify-content: center;
         text-align: center;
+        margin: 0;
+        padding: 0;
       }
 
       form {
         max-width: 50%;
+        margin: 0;
+        padding: 0;
       }
 
       input {
         cursor: pointer;
         font-size: 1rem;
         margin-bottom: .25em;
+        transition-timing-function: linear;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
       }
+
+      {{/* @keyframes a1 {
+        0% {
+          transform: translate(0%, 0%);
+        }
+
+        100% {
+          transform: translate(0%, 5%);
+        }
+      }
+
+      @keyframes a2 {
+        0% {
+          transform: translate(0%, -5%);
+        }
+
+        100% {
+          transform: translate(0%, 5%);
+        }
+      }
+
+      @keyframes a3 {
+        0% {
+          transform: translate(0%, 5%);
+        }
+
+        100% {
+          transform: translate(0%, 0%);
+        }
+      }
+
+
+      input:nth-of-type(3n) {
+        animation-duration: 5s;
+        animation-name: a1;
+      }
+
+      input:nth-of-type(3n + 1) {
+        animation-duration: 12s;
+        animation-name: a2;
+      }
+
+      input:nth-of-type(3n + 2) {
+        animation-duration: 6s;
+        animation-name: a3;
+      } */}}
     </style>
   </head>
   <body>

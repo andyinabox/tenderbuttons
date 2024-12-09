@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>🖲️ tender buttons</title>
+
+    <meta name="description" content="{{ .Sentence }}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <style>
+      html {
+        font-size: calc(75% + 2vw);
+      }
+      body {
+        background: rgb(255,248,223);
+        background: radial-gradient(circle, rgba(255,248,223,1) 0%, rgba(195,164,138,1) 35%, rgba(255,247,223,1) 100%); 
+        height: 100vh;
+      }
+
+      button {
+        cursor: pointer;
+        font-size: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+
+    {{- range $tok := .Tokens }}
+    <button onclick="window.location.reload()">{{ $tok }}</button>
+    {{- end}}
+    
+  </body>
+</html>

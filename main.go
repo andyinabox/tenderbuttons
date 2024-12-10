@@ -28,6 +28,7 @@ var corpus string
 var readme []byte
 
 const maxWords = 100
+const prefixLen = 2
 
 type indexContext struct {
 	Sentence string
@@ -49,20 +50,25 @@ func main() {
 
 	flag.Parse()
 
+	log.Info("starting application", "port", port, "host", host, "debug", debug)
+
 	if debug {
 		log.SetLevel(log.DebugLevel)
 	}
 
 	// compile templates
+	log.Info("compiling templates")
 	tpl, err := template.New("").ParseFS(templates, "tmpl/*.tmpl")
 	if err != nil {
 		panic(err)
 	}
 
 	// create markov chain
+	log.Info("building chain", "prefixLen", prefixLen)
 	chain := chains.NewChain(2)
 	chain.BuildFromString(corpus)
 
+	log.Info("parsing readme")
 	about := blackfriday.Run(readme)
 
 	// create server
@@ -90,7 +96,7 @@ func main() {
 
 						// create sentance from token
 						if tok, ok := r.Form["token"]; ok && tok[0] != "" {
-							log.Debugf("generating new sentence from %q\n", tok[0])
+							log.Debugf("generating new sentence from %q", tok[0])
 							sentence = chain.GenerateFromToken(tok[0], maxWords)
 						}
 
@@ -100,7 +106,7 @@ func main() {
 							sentence = chain.Generate(maxWords)
 						}
 
-						log.Infof("sentence: %q\n", sentence)
+						log.Infof("%q", sentence)
 
 						err = tpl.ExecuteTemplate(w, "index.html.tmpl", indexContext{
 							Sentence: sentence,
@@ -114,7 +120,7 @@ func main() {
 					},
 				},
 				{
-					Path: "/about",
+					Path: "/readme",
 					HandlerFunc: func(w http.ResponseWriter, r *http.Request) {
 						log.Debug("about handler")
 						err := tpl.ExecuteTemplate(w, "about.html.tmpl", aboutContext{
@@ -129,11 +135,7 @@ func main() {
 		),
 	}
 
-	displayHost := host
-	if displayHost == "" {
-		displayHost = "localhost"
-	}
-	log.Printf("starting server at http://%s:%d", displayHost, port)
+	log.Info("starting server", "host", host, "port", port)
 	err = server.ListenAndServe()
 	if err != nil {
 		panic(err)

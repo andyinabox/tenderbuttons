@@ -7,6 +7,8 @@ import (
 	"math/rand"
 	"strings"
 	"unicode"
+
+	"github.com/charmbracelet/log"
 )
 
 // Chain contains a map ("chain") of prefixes to a list of suffixes.
@@ -52,6 +54,15 @@ func (c *Chain) Build(r io.Reader) {
 			c.startPrefixes = append(c.startPrefixes, p)
 		}
 	}
+
+	// for str, prefixes := range c.prefixLookup {
+	// 	tokens := make([]string, len(prefixes))
+	// 	for i, p := range prefixes {
+	// 		tokens[i] = p.String()
+	// 	}
+
+	// 	log.Debugf("%q: %s", str, fmt.Sprintf(`"%s"`, strings.Join(tokens, `" "`)))
+	// }
 }
 
 func (c *Chain) BuildFromString(s string) {
@@ -65,11 +76,10 @@ func (c *Chain) Generate(n int) string {
 }
 
 func (c *Chain) GenerateFromToken(tok string, n int) string {
-	var p Prefix
-	prefixes, ok := c.prefixLookup[tok]
-	if ok && len(prefixes) > 0 {
-		p = prefixes[rand.Intn(len(prefixes))]
-	} else {
+
+	p, ok := c.getTokenPrefix(tok)
+
+	if !ok {
 		p = c.getStartPrefix()
 	}
 
@@ -77,6 +87,7 @@ func (c *Chain) GenerateFromToken(tok string, n int) string {
 }
 
 func (c *Chain) generate(n int, p Prefix, words []string) string {
+	log.Debug("generate chain", "pfx", p, "words", words)
 	for i := 0; i < n; i++ {
 		choices := c.chain[p.String()]
 		if len(choices) == 0 {
@@ -95,5 +106,23 @@ func (c *Chain) generate(n int, p Prefix, words []string) string {
 }
 
 func (c *Chain) getStartPrefix() Prefix {
-	return c.startPrefixes[rand.Intn(len(c.startPrefixes))]
+	p := make(Prefix, c.prefixLen)
+	copy(p, c.startPrefixes[rand.Intn(len(c.startPrefixes))])
+	return p
+}
+
+func (c *Chain) getTokenPrefix(tok string) (p Prefix, ok bool) {
+
+	prefixes, ok := c.prefixLookup[tok]
+
+	if !ok || len(prefixes) < 1 {
+		return p, false
+	}
+
+	// copy prefix
+	p = make(Prefix, c.prefixLen)
+	copy(p, prefixes[rand.Intn(len(prefixes))])
+	ok = true
+
+	return
 }

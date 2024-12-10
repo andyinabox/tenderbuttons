@@ -5,9 +5,10 @@ import (
 	"flag"
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 	"strings"
+
+	"github.com/charmbracelet/log"
 
 	"github.com/andyinaobox/tenderbuttons/pkg/chains"
 	"github.com/andyinaobox/tenderbuttons/pkg/handler"
@@ -40,9 +41,17 @@ type aboutContext struct {
 func main() {
 	var port int
 	var host string
+	var debug bool
 
 	flag.IntVar(&port, "p", 8080, "webserver port")
-	flag.StringVar(&host, "h", "", "webserverhost")
+	flag.StringVar(&host, "h", "", "webserver hostname")
+	flag.BoolVar(&debug, "v", false, "verbose logging")
+
+	flag.Parse()
+
+	if debug {
+		log.SetLevel(log.DebugLevel)
+	}
 
 	// compile templates
 	tpl, err := template.New("").ParseFS(templates, "tmpl/*.tmpl")
@@ -73,7 +82,7 @@ func main() {
 				{
 					Path: "/",
 					HandlerFunc: func(w http.ResponseWriter, r *http.Request) {
-						log.Println("index handler")
+						log.Debug("index handler")
 						var err error
 						var sentence string
 
@@ -81,17 +90,17 @@ func main() {
 
 						// create sentance from token
 						if tok, ok := r.Form["token"]; ok && tok[0] != "" {
-							log.Printf("generating new sentence from %q\n", tok[0])
+							log.Debugf("generating new sentence from %q\n", tok[0])
 							sentence = chain.GenerateFromToken(tok[0], maxWords)
 						}
 
 						// create sentance from skratch
 						if sentence == "" {
-							log.Println("generate new sentence from scratch")
+							log.Debug("generate new sentence from scratch")
 							sentence = chain.Generate(maxWords)
 						}
 
-						log.Printf("sentence: %q\n", sentence)
+						log.Infof("sentence: %q\n", sentence)
 
 						err = tpl.ExecuteTemplate(w, "index.html.tmpl", indexContext{
 							Sentence: sentence,
@@ -107,7 +116,7 @@ func main() {
 				{
 					Path: "/about",
 					HandlerFunc: func(w http.ResponseWriter, r *http.Request) {
-						log.Println("about handler")
+						log.Debug("about handler")
 						err := tpl.ExecuteTemplate(w, "about.html.tmpl", aboutContext{
 							Body: template.HTML(about),
 						})

@@ -12,15 +12,13 @@ import (
 type RunMode string
 
 const (
-	RunModeHTTP             RunMode = "http"
-	RunModeHTTPSSelfSigned  RunMode = "https-ss"
-	RunModeHTTPSLetsEncrypt RunMode = "https-le"
+	RunModeHTTP            RunMode = "http"
+	RunModeHTTPSSelfSigned RunMode = "https-ss"
 )
 
 const (
-	SelfSignedCertFilePath  = ".cert/localhost.crt"
-	SelfSignedKeyFilePath   = ".cert/localhost.key"
-	LetsEncryptCertCacheDir = "certs"
+	SelfSignedCertFilePath = ".cert/localhost.crt"
+	SelfSignedKeyFilePath  = ".cert/localhost.key"
 )
 
 var ports map[RunMode]int
@@ -30,7 +28,6 @@ func init() {
 	ports = make(map[RunMode]int)
 	ports[RunModeHTTP] = 8080
 	ports[RunModeHTTPSSelfSigned] = 4443
-	ports[RunModeHTTPSLetsEncrypt] = 443
 }
 
 type Config struct {
@@ -48,7 +45,7 @@ type Server struct {
 
 func New(cnf *Config) *Server {
 
-	if cnf.RunMode != RunModeHTTP && cnf.RunMode != RunModeHTTPSSelfSigned && cnf.RunMode != RunModeHTTPSLetsEncrypt {
+	if cnf.RunMode != RunModeHTTP && cnf.RunMode != RunModeHTTPSSelfSigned {
 		log.Fatalf("invalid server run mode: %s", cnf.RunMode)
 	}
 
@@ -80,20 +77,6 @@ func New(cnf *Config) *Server {
 
 	}
 
-	// configure for lets encrypt TLS
-	if cnf.RunMode == RunModeHTTPSLetsEncrypt {
-		s.cm = &autocert.Manager{
-			Prompt:     autocert.AcceptTOS,
-			HostPolicy: autocert.HostWhitelist(cnf.AllowedHosts...), //Your domain here
-			Cache:      autocert.DirCache(LetsEncryptCertCacheDir),  //Folder for storing certificates
-		}
-
-		srv.TLSConfig = &tls.Config{
-			GetCertificate: s.cm.GetCertificate,
-			MinVersion:     tls.VersionTLS12, // improves cert reputation score at https://www.ssllabs.com/ssltest/
-		}
-	}
-
 	return s
 }
 
@@ -101,14 +84,7 @@ func (s *Server) Start() error {
 
 	log.Info("starting server", "port", s.cnf.Port, "mode", s.cnf.RunMode)
 
-	if s.cnf.RunMode == RunModeHTTPSLetsEncrypt {
-		go func() {
-			log.Debug("starting http server for lets encrypt")
-			log.Fatal(http.ListenAndServe(":http", s.cm.HTTPHandler(nil)))
-		}()
-	}
-
-	if s.cnf.RunMode == RunModeHTTPSSelfSigned || s.cnf.RunMode == RunModeHTTPSLetsEncrypt {
+	if s.cnf.RunMode == RunModeHTTPSSelfSigned {
 		return s.srv.ListenAndServeTLS("", "")
 	}
 

@@ -36,7 +36,7 @@ func init() {
 func main() {
 
 	flag.BoolVar(&debug, "v", false, "verbose logging")
-	flag.StringVar(&serverRunMode, "m", "http", "server run mode. can be 'http', 'https-ss', 'https-le'")
+	flag.StringVar(&serverRunMode, "m", "http", "server run mode. can be 'http', 'https-ss'")
 
 	flag.Parse()
 

@@ -1,25 +1,24 @@
 package params
 
-import "testing"
+import (
+	"html/template"
+	"testing"
+)
 
-func TestHSLColorCSS(t *testing.T) {
-	c := HSLColor{180, 50., 50.}
-	expected := "hsl(180deg, 50.00%, 50.00%)"
-
+func TestColorRGBA(t *testing.T) {
+	c := NewColorRGB(0, 100, 200)
+	expected := template.CSS("rgb(0 100 200 / 100.00%)")
 	result := c.ToCSS()
 	if result != expected {
-		t.Fatalf("expected %q, got %q", expected, result)
+		t.Errorf("expected %q, got %q", expected, result)
 	}
-
 }
 
-func TestHSLAColorCSS(t *testing.T) {
-	c := HSLAColor{180, 50., 50., 50.}
-	expected := "hsl(180deg, 50.00%, 50.00% / 50.00%)"
-
+func TestColorHSLA(t *testing.T) {
+	c := NewColorHSL(100, 50., 50.)
+	expected := template.CSS("hsl(100 50.00% 50.00% / 100.00%)")
 	result := c.ToCSS()
 	if result != expected {
-		t.Fatalf("expected %q, got %q", expected, result)
+		t.Errorf("expected %q, got %q", expected, result)
 	}
-
 }

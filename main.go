@@ -36,25 +36,6 @@ type DisplaySettings struct {
 	LinearAngle1 int
 	LinearAngle2 int
 }
-
-func getSeededRandom(sentence string) *rand.Rand {
-	h := fnv.New64a()
-	h.Write([]byte(sentence))
-	return rand.New(rand.NewSource(int64(h.Sum64())))
-}
-
-func getDisplaySettings(sentence string) *DisplaySettings {
-
-	r := getSeededRandom(sentence)
-
-	la1 := int(r.Float32() * float32(360))
-
-	return &DisplaySettings{
-		LinearAngle1: la1,
-		LinearAngle2: 360 - la1,
-	}
-}
-
 type indexContext struct {
 	DisplaySettings *DisplaySettings
 	Sentence        string
@@ -168,4 +149,22 @@ func main() {
 		panic(err)
 	}
 
+}
+
+func getSeededRandom(sentence string) *rand.Rand {
+	h := fnv.New64a()
+	h.Write([]byte(sentence))
+	return rand.New(rand.NewSource(int64(h.Sum64())))
+}
+
+func getDisplaySettings(sentence string) *DisplaySettings {
+
+	r := getSeededRandom(sentence)
+
+	la1 := int(r.Float32() * float32(360))
+
+	return &DisplaySettings{
+		LinearAngle1: la1,
+		LinearAngle2: 360 - la1,
+	}
 }

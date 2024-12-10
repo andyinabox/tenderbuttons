@@ -4,9 +4,7 @@ import (
 	"embed"
 	"flag"
 	"fmt"
-	"hash/fnv"
 	"html/template"
-	"math/rand"
 	"net/http"
 	"strings"
 
@@ -14,6 +12,7 @@ import (
 
 	"github.com/andyinaobox/tenderbuttons/pkg/chains"
 	"github.com/andyinaobox/tenderbuttons/pkg/handler"
+	"github.com/andyinaobox/tenderbuttons/pkg/params"
 	"github.com/russross/blackfriday/v2"
 )
 
@@ -32,14 +31,14 @@ var readme []byte
 const maxWords = 100
 const prefixLen = 2
 
-type DisplaySettings struct {
+type displayParams struct {
 	LinearAngle1 int
 	LinearAngle2 int
 }
 type indexContext struct {
-	DisplaySettings *DisplaySettings
-	Sentence        string
-	Tokens          []string
+	DisplayParams *displayParams
+	Sentence      string
+	Tokens        []string
 }
 
 type aboutContext struct {
@@ -116,9 +115,9 @@ func main() {
 						log.Infof("%q", sentence)
 
 						err = tpl.ExecuteTemplate(w, "index.html.tmpl", indexContext{
-							DisplaySettings: (getDisplaySettings(sentence)),
-							Sentence:        sentence,
-							Tokens:          strings.Split(sentence, " "),
+							DisplayParams: newDisplayParams(sentence),
+							Sentence:      sentence,
+							Tokens:        strings.Split(sentence, " "),
 						})
 
 						if err != nil {
@@ -151,20 +150,14 @@ func main() {
 
 }
 
-func getSeededRandom(sentence string) *rand.Rand {
-	h := fnv.New64a()
-	h.Write([]byte(sentence))
-	return rand.New(rand.NewSource(int64(h.Sum64())))
-}
+func newDisplayParams(sentence string) *displayParams {
 
-func getDisplaySettings(sentence string) *DisplaySettings {
+	p := params.New([]byte(sentence))
 
-	r := getSeededRandom(sentence)
+	la1, la2 := p.GetComplementaryDegrees()
 
-	la1 := int(r.Float32() * float32(360))
-
-	return &DisplaySettings{
+	return &displayParams{
 		LinearAngle1: la1,
-		LinearAngle2: 360 - la1,
+		LinearAngle2: la2,
 	}
 }

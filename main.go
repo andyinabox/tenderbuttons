@@ -24,9 +24,16 @@ var corpus string
 //go:embed README.md
 var readme []byte
 
+var letsEncryptAllowedHosts []string
+var debug bool
+var serverRunMode string
+
+func init() {
+	// todo: should probably be configured somwhere else!
+	letsEncryptAllowedHosts = []string{"tenderbuttons.click", "tenderbuttons.jcloud-ver-jpe.ik-server.com"}
+}
+
 func main() {
-	var debug bool
-	var serverRunMode string
 
 	flag.BoolVar(&debug, "v", false, "verbose logging")
 	flag.StringVar(&serverRunMode, "m", "http", "server run mode. can be 'http', 'https-ss', 'https-le'")
@@ -74,8 +81,9 @@ func main() {
 
 	// configure server
 	sc := &server.Config{
-		Handler: h,
-		RunMode: server.RunMode(serverRunMode),
+		Handler:      h,
+		RunMode:      server.RunMode(serverRunMode),
+		AllowedHosts: letsEncryptAllowedHosts,
 	}
 
 	// create server

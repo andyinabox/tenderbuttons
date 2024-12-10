@@ -3,9 +3,10 @@ package handler
 import (
 	"embed"
 	"io/fs"
-	"log"
 	"net/http"
 	"strings"
+
+	"github.com/charmbracelet/log"
 )
 
 type Route struct {
@@ -28,8 +29,15 @@ func New(assetsConfig *AssetsConfig, routes []Route) Handler {
 
 	// create router using an http.ServeMux
 	mux := http.NewServeMux()
-	for _, r := range routes {
-		mux.HandleFunc(r.Path, r.HandlerFunc)
+	for _, route := range routes {
+		mux.HandleFunc(route.Path, func(w http.ResponseWriter, r *http.Request) {
+			if r.URL.Path != route.Path {
+				log.Infof("attempt to access path %q, redirecting", r.URL.Path)
+				http.Redirect(w, r, "/", http.StatusSeeOther)
+				return
+			}
+			route.HandlerFunc(w, r)
+		})
 	}
 
 	return Handler{
@@ -48,11 +56,11 @@ type Handler struct {
 func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	if strings.HasPrefix(r.URL.Path, h.assetsConfig.UrlPath) {
-		log.Printf("serve using file server: %s", r.URL)
+		log.Debugf("serve using file server: %s", r.URL)
 		h.assetsHandler.ServeHTTP(w, r)
 		return
 	}
 
-	log.Printf("serve using ServeMux: %s", r.URL)
+	log.Debugf("serve using ServeMux: %s", r.URL)
 	h.mux.ServeHTTP(w, r)
 }

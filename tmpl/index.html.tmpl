@@ -9,17 +9,22 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link rel="stylesheet" href="/assets/styles.css" />
-
+    <style>
+      :root {
+        --linear-angle-1: {{ .DisplaySettings.LinearAngle1 -}}deg;
+        --linear-angle-2: {{ .DisplaySettings.LinearAngle2 -}}deg;
+      }
+    </style>
   </head>
   <body id="index">
-
+    <main>
     <form method="post" action="/">
       {{- range $tok := .Tokens }}
       <input type="submit" name="token" value="{{ $tok }}" />
       {{- end}}
     </form>
 
-    <a class="about-link" href="/about">❓</a>
-    
+    <a class="about-link" href="/readme">❓</a>
+    </main>
   </body>
 </html>

@@ -4,10 +4,13 @@ import (
 	"embed"
 	"flag"
 	"fmt"
+	"hash/fnv"
 	"html/template"
-	"log"
+	"math/rand"
 	"net/http"
 	"strings"
+
+	"github.com/charmbracelet/log"
 
 	"github.com/andyinaobox/tenderbuttons/pkg/chains"
 	"github.com/andyinaobox/tenderbuttons/pkg/handler"
@@ -27,10 +30,16 @@ var corpus string
 var readme []byte
 
 const maxWords = 100
+const prefixLen = 2
 
+type DisplaySettings struct {
+	LinearAngle1 int
+	LinearAngle2 int
+}
 type indexContext struct {
-	Sentence string
-	Tokens   []string
+	DisplaySettings *DisplaySettings
+	Sentence        string
+	Tokens          []string
 }
 
 type aboutContext struct {
@@ -40,20 +49,33 @@ type aboutContext struct {
 func main() {
 	var port int
 	var host string
+	var debug bool
 
 	flag.IntVar(&port, "p", 8080, "webserver port")
-	flag.StringVar(&host, "h", "localhost", "webserverhost")
+	flag.StringVar(&host, "h", "", "webserver hostname")
+	flag.BoolVar(&debug, "v", false, "verbose logging")
+
+	flag.Parse()
+
+	log.Info("starting application", "port", port, "host", host, "debug", debug)
+
+	if debug {
+		log.SetLevel(log.DebugLevel)
+	}
 
 	// compile templates
+	log.Info("compiling templates")
 	tpl, err := template.New("").ParseFS(templates, "tmpl/*.tmpl")
 	if err != nil {
 		panic(err)
 	}
 
 	// create markov chain
+	log.Info("building chain", "prefixLen", prefixLen)
 	chain := chains.NewChain(2)
 	chain.BuildFromString(corpus)
 
+	log.Info("parsing readme")
 	about := blackfriday.Run(readme)
 
 	// create server
@@ -73,7 +95,7 @@ func main() {
 				{
 					Path: "/",
 					HandlerFunc: func(w http.ResponseWriter, r *http.Request) {
-						log.Println("index handler")
+						log.Debug("index handler")
 						var err error
 						var sentence string
 
@@ -81,21 +103,22 @@ func main() {
 
 						// create sentance from token
 						if tok, ok := r.Form["token"]; ok && tok[0] != "" {
-							log.Printf("generating new sentence from %q\n", tok[0])
+							log.Debugf("generating new sentence from %q", tok[0])
 							sentence = chain.GenerateFromToken(tok[0], maxWords)
 						}
 
 						// create sentance from skratch
 						if sentence == "" {
-							log.Println("generate new sentence from scratch")
+							log.Debug("generate new sentence from scratch")
 							sentence = chain.Generate(maxWords)
 						}
 
-						log.Printf("sentence: %q\n", sentence)
+						log.Infof("%q", sentence)
 
 						err = tpl.ExecuteTemplate(w, "index.html.tmpl", indexContext{
-							Sentence: sentence,
-							Tokens:   strings.Split(sentence, " "),
+							DisplaySettings: (getDisplaySettings(sentence)),
+							Sentence:        sentence,
+							Tokens:          strings.Split(sentence, " "),
 						})
 
 						if err != nil {
@@ -105,9 +128,9 @@ func main() {
 					},
 				},
 				{
-					Path: "/about",
+					Path: "/readme",
 					HandlerFunc: func(w http.ResponseWriter, r *http.Request) {
-						log.Println("about handler")
+						log.Debug("about handler")
 						err := tpl.ExecuteTemplate(w, "about.html.tmpl", aboutContext{
 							Body: template.HTML(about),
 						})
@@ -120,10 +143,28 @@ func main() {
 		),
 	}
 
-	log.Printf("starting server at http://%s:%d", host, port)
+	log.Info("starting server", "host", host, "port", port)
 	err = server.ListenAndServe()
 	if err != nil {
 		panic(err)
 	}
 
+}
+
+func getSeededRandom(sentence string) *rand.Rand {
+	h := fnv.New64a()
+	h.Write([]byte(sentence))
+	return rand.New(rand.NewSource(int64(h.Sum64())))
+}
+
+func getDisplaySettings(sentence string) *DisplaySettings {
+
+	r := getSeededRandom(sentence)
+
+	la1 := int(r.Float32() * float32(360))
+
+	return &DisplaySettings{
+		LinearAngle1: la1,
+		LinearAngle2: 360 - la1,
+	}
 }

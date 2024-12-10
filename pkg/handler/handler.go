@@ -32,7 +32,7 @@ func New(assetsConfig *AssetsConfig, routes []Route) Handler {
 	for _, route := range routes {
 		mux.HandleFunc(route.Path, func(w http.ResponseWriter, r *http.Request) {
 			if r.URL.Path != route.Path {
-				log.Infof("attempat to access path %q, redirecting", r.URL.Path)
+				log.Infof("attempt to access path %q, redirecting", r.URL.Path)
 				http.Redirect(w, r, "/", http.StatusSeeOther)
 				return
 			}

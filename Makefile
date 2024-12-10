@@ -17,3 +17,8 @@ docker-run:
 .PHONY: docker-push
 docker-push:
 	docker push andyinabox/tenderbuttons
+
+# non-phonies
+
+.cert/localhost.crt:
+	./script/cert.sh

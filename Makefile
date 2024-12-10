@@ -6,6 +6,10 @@ watch:
 run:
 	go run . -v
 
+.PHONY: run-https
+run-https: .cert/localhost.crt
+	go run . -v -m https-ss
+
 .PHONY: docker-build
 docker-build:
 	docker build -t andyinabox/tenderbuttons .

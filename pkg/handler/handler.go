@@ -29,8 +29,15 @@ func New(assetsConfig *AssetsConfig, routes []Route) Handler {
 
 	// create router using an http.ServeMux
 	mux := http.NewServeMux()
-	for _, r := range routes {
-		mux.HandleFunc(r.Path, r.HandlerFunc)
+	for _, route := range routes {
+		mux.HandleFunc(route.Path, func(w http.ResponseWriter, r *http.Request) {
+			if r.URL.Path != route.Path {
+				log.Info("attempat to access path %q, redirecting", r.URL.Path)
+				http.Redirect(w, r, "/", http.StatusSeeOther)
+				return
+			}
+			route.HandlerFunc(w, r)
+		})
 	}
 
 	return Handler{

@@ -14,7 +14,6 @@ type Config struct {
 	ServerRunMode string
 	Corpus        []byte
 	Readme        []byte
-	BgImageUrls   []string
 	MinWords      int
 	MaxWords      int
 	PrefixLength  int
@@ -35,7 +34,6 @@ func New(cfg *Config) *App {
 	router := approuter.New(cfg.Templates, &approuter.Config{
 		Corpus:       cfg.Corpus,
 		Readme:       cfg.Readme,
-		BgImageUrls:  cfg.BgImageUrls,
 		MinWords:     cfg.MinWords,
 		MaxWords:     cfg.MaxWords,
 		PrefixLength: cfg.PrefixLength,

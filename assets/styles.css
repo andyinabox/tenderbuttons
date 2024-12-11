@@ -1,7 +1,4 @@
 :root {
-  --background-image: url('/assets/bg/bg1.png');
-  --background-size: 1024px 1024px;
-
   --radial-stop-1: 45%;
   --radial-color-1: rgba(255, 248, 223, 1);
   --radial-color-2: rgba(195, 164, 138, 0.9);
@@ -52,12 +49,10 @@ html {
 }
 
 body {
-  background: var(--background-image);
-  background-repeat: repeat;
-  background-size: var(--background-size);
   margin: 0;
   padding: 0;
 }
+
 body#index {
   text-align: center;
 }

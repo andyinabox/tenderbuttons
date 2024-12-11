@@ -3,18 +3,14 @@ package main
 import (
 	"embed"
 	"flag"
-	"fmt"
 	"html/template"
 	"io/fs"
 	"os"
-	"path/filepath"
 
 	"github.com/charmbracelet/log"
 
 	"github.com/andyinaobox/tenderbuttons/domain/app"
 )
-
-const bgImagesPath = "assets/bg"
 
 //go:embed tmpl/*
 var templates embed.FS
@@ -44,38 +40,17 @@ func init() {
 }
 
 func main() {
-	var err error
 	var assetsFs fs.FS
-	var bgImageUrls []string
-	var imageEntries []fs.DirEntry
 
 	// load assets from filesystem for development
 	if loadAssetsFromFs {
-
-		imageEntries, err = os.ReadDir(bgImagesPath)
-		if err != nil {
-			log.Fatal(err)
-		}
-
 		assetsFs = os.DirFS("assets")
 		// load assets from embedded data
 	} else {
-
-		imageEntries, err = assets.ReadDir(bgImagesPath)
-		if err != nil {
-			log.Fatal(err)
-		}
-
+		var err error
 		assetsFs, err = fs.Sub(fs.FS(assets), "assets")
 		if err != nil {
 			log.Fatal(err)
-		}
-	}
-
-	bgImageUrls = make([]string, 0)
-	for _, f := range imageEntries {
-		if filepath.Ext(f.Name()) == ".png" {
-			bgImageUrls = append(bgImageUrls, fmt.Sprintf("/%s/%s", bgImagesPath, f.Name()))
 		}
 	}
 
@@ -85,7 +60,6 @@ func main() {
 			ServerRunMode: serverRunMode,
 			Corpus:        corpus,
 			Readme:        readme,
-			BgImageUrls:   bgImageUrls,
 			MinWords:      5,
 			MaxWords:      35,
 			PrefixLength:  2,

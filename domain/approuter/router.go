@@ -7,7 +7,6 @@ import (
 type Config struct {
 	Corpus       []byte
 	Readme       []byte
-	BgImageUrls  []string
 	MinWords     int
 	MaxWords     int
 	PrefixLength int

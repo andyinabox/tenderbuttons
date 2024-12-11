@@ -1,4 +1,4 @@
-package cssvars
+package cssprops
 
 type Value string
 

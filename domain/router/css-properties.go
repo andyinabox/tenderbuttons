@@ -3,7 +3,7 @@ package router
 import (
 	"html/template"
 
-	"github.com/andyinaobox/tenderbuttons/pkg/cssvars"
+	"github.com/andyinaobox/tenderbuttons/pkg/cssprops"
 	"github.com/andyinaobox/tenderbuttons/pkg/params"
 )
 
@@ -27,7 +27,7 @@ func getCSSProperties(sentence string) template.HTML {
 	lc2 := params.NewColorHSLA(lc1.H.Value(), lc1.S.Value(), lc1.L.Value(), 0.)
 	lc4 := params.NewColorHSLA(lc3.H.Value(), lc3.S.Value(), lc3.L.Value(), 0.)
 
-	d := &cssvars.Properties{
+	d := &cssprops.Properties{
 		"--radial-stop-1":  rs1,
 		"--linear-angle-1": la1,
 		"--linear-color-1": lc1,

@@ -22,6 +22,11 @@ docker-run:
 docker-push:
 	docker push andyinabox/tenderbuttons
 
+.PHONY: stats
+stats:
+	go run ./cmd/stats/main.go 3 35 1000
+
+
 # non-phonies
 
 .cert/localhost.crt:

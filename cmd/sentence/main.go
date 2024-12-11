@@ -8,21 +8,26 @@ import (
 	"github.com/andyinaobox/tenderbuttons/pkg/chains"
 )
 
+const pathToCorpus = "corpus/tb.txt"
+
 func main() {
 	args := os.Args[1:]
 	if len(args) != 2 {
-		fmt.Println("Usage: sentence <max words> <path/to/corpus.txt>")
+		fmt.Println("Usage: sentence <min words> <max words>")
 		return
 	}
 
-	maxWords, err := strconv.Atoi(args[0])
+	minWords, err := strconv.Atoi(args[0])
 	if err != nil {
 		panic(err)
 	}
 
-	path := args[1]
+	maxWords, err := strconv.Atoi(args[1])
+	if err != nil {
+		panic(err)
+	}
 
-	file, err := os.Open(path)
+	file, err := os.Open(pathToCorpus)
 	if err != nil {
 		panic(err)
 	}
@@ -30,7 +35,7 @@ func main() {
 	chain := chains.NewChain(2)
 	chain.Build(file)
 
-	sentence := chain.Generate(maxWords)
+	sentence := chain.Generate(minWords, maxWords)
 
 	fmt.Println(sentence)
 }

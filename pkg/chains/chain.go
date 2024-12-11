@@ -20,6 +20,8 @@ type Chain struct {
 	prefixLen int
 	// main markov chain. note that the key is actuall a string representation of a prefix
 	chain map[string][]string
+	// chain of prefixes that lead to end tokens
+	endings map[string][]string
 	// contains prefixes that begin with a capital latter (stored as strings)
 	startPrefixes []string
 	// the key here is a single token, used to lookup possible prefixes that begin
@@ -29,7 +31,13 @@ type Chain struct {
 
 // NewChain returns a new Chain with prefixes of prefixLen words.
 func NewChain(prefixLen int) *Chain {
-	return &Chain{prefixLen, make(map[string][]string), make([]string, 0), make(map[string][]string)}
+	return &Chain{
+		prefixLen:     prefixLen,
+		chain:         make(map[string][]string),
+		endings:       make(map[string][]string),
+		startPrefixes: make([]string, 0),
+		prefixLookup:  make(map[string][]string),
+	}
 }
 
 // Build reads text from the provided Reader and
@@ -47,6 +55,11 @@ func (c *Chain) Build(r io.Reader) {
 
 		// add to main chain
 		c.chain[key] = append(c.chain[key], s)
+
+		// add to endings chain if ends in a period
+		if strings.HasSuffix(s, ".") {
+			c.endings[key] = append(c.endings[key], s)
+		}
 
 		// add to start prefixes if first char is capital letter
 		if unicode.IsUpper([]rune(key)[0]) {
@@ -67,12 +80,12 @@ func (c *Chain) BuildFromString(s string) {
 }
 
 // Generate returns a string of at most n words generated from Chain.
-func (c *Chain) Generate(n int) string {
+func (c *Chain) Generate(minWords int, maxWords int) string {
 	p := c.getStartPrefix()
-	return c.generate(n, p, []string(p))
+	return c.generate(minWords, maxWords, p, []string(p))
 }
 
-func (c *Chain) GenerateFromToken(tok string, n int) string {
+func (c *Chain) GenerateFromToken(tok string, minWords int, maxWords int) string {
 
 	p, ok := c.getTokenPrefix(tok)
 
@@ -80,15 +93,30 @@ func (c *Chain) GenerateFromToken(tok string, n int) string {
 		p = c.getStartPrefix()
 	}
 
-	return c.generate(n, p, []string(p))
+	return c.generate(minWords, maxWords, p, []string(p))
 }
 
-func (c *Chain) generate(n int, startPrefix Prefix, startWords []string) string {
+func (c *Chain) generate(minWords int, maxWords int, startPrefix Prefix, startWords []string) string {
 	log.Debug("generate chain", "startPrefix", startPrefix, "startWords", startWords)
 	var words []string
 	var p Prefix
 
 	outerLoops := 0
+
+	// this helps us keep the word lenth average closer
+	// to the middle
+	shouldUseEndChoices := func(i int) bool {
+		if i < minWords {
+			return false
+		}
+
+		// the likelyhood of using the end choice will
+		// increase as the numbers get largers
+		p := float32(i-minWords) / float32(maxWords)
+		r := rand.Float32() * 0.9
+
+		return p > r
+	}
 
 	// outer loop will keep trying to make a sentence less than n words
 outer:
@@ -112,9 +140,15 @@ outer:
 		log.Debug("start sentence builing loop", "pfx", p, "words", words)
 
 		// build sentence
-		for i := 0; i < n; i++ {
+		for i := 0; i < maxWords; i++ {
+
 			// get a sice of possible next tokens
 			choices := c.chain[p.String()]
+			endChoices := c.endings[p.String()]
+
+			if len(endChoices) != 0 && shouldUseEndChoices(i) {
+				choices = endChoices
+			}
 
 			// bail out if there are no choices
 			if len(choices) == 0 {

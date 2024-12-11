@@ -12,6 +12,7 @@ import (
 )
 
 const (
+	minWords  = 3
 	maxWords  = 35
 	prefixLen = 2
 )
@@ -38,13 +39,13 @@ func (r *Router) IndexHandler() http.HandlerFunc {
 		// create sentance from token
 		if tok, ok := req.Form["token"]; ok && tok[0] != "" {
 			log.Debugf("generating new sentence from %q", tok[0])
-			sentence = chain.GenerateFromToken(tok[0], maxWords)
+			sentence = chain.GenerateFromToken(tok[0], minWords, maxWords)
 		}
 
 		// create sentance from skratch
 		if sentence == "" {
 			log.Debug("generate new sentence from scratch")
-			sentence = chain.Generate(maxWords)
+			sentence = chain.Generate(minWords, maxWords)
 		}
 
 		log.Infof("%q", sentence)

@@ -1,10 +1,10 @@
 .PHONY: watch
 watch:
-	reflex -d none -s make run
+	reflex -d none -G "assets/*" -s make run-dev
 
-.PHONY: run
-run:
-	go run . -v
+.PHONY: run-dev
+run-dev:
+	go run . -v -a
 
 .PHONY: run-https
 run-https: .cert/localhost.crt

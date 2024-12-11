@@ -1,4 +1,6 @@
-package server
+// package tlsserver provides a webserver that can be run in https mode.
+// it is only really tested for local development with a self-signed cert.
+package tlsserver
 
 import (
 	"crypto/tls"
@@ -6,19 +8,13 @@ import (
 	"net/http"
 
 	"github.com/charmbracelet/log"
-	"golang.org/x/crypto/acme/autocert"
 )
 
 type RunMode string
 
 const (
-	RunModeHTTP            RunMode = "http"
-	RunModeHTTPSSelfSigned RunMode = "https-ss"
-)
-
-const (
-	SelfSignedCertFilePath = ".cert/localhost.crt"
-	SelfSignedKeyFilePath  = ".cert/localhost.key"
+	RunModeHTTP  RunMode = "http"
+	RunModeHTTPS RunMode = "https"
 )
 
 var ports map[RunMode]int
@@ -27,25 +23,25 @@ func init() {
 	// set default ports
 	ports = make(map[RunMode]int)
 	ports[RunModeHTTP] = 8080
-	ports[RunModeHTTPSSelfSigned] = 4443
+	ports[RunModeHTTPS] = 4443
 }
 
 type Config struct {
 	Port         int
 	Handler      http.Handler
 	RunMode      RunMode
-	AllowedHosts []string // only used for lets encrypt
+	CertFilePath string
+	KeyFilePath  string
 }
 
 type Server struct {
 	srv *http.Server
-	cm  *autocert.Manager
 	cnf *Config
 }
 
 func New(cnf *Config) *Server {
 
-	if cnf.RunMode != RunModeHTTP && cnf.RunMode != RunModeHTTPSSelfSigned {
+	if cnf.RunMode != RunModeHTTP && cnf.RunMode != RunModeHTTPS {
 		log.Fatalf("invalid server run mode: %s", cnf.RunMode)
 	}
 
@@ -64,9 +60,9 @@ func New(cnf *Config) *Server {
 	}
 
 	// configure for self-signed TLS
-	if cnf.RunMode == RunModeHTTPSSelfSigned {
+	if cnf.RunMode == RunModeHTTPS {
 		log.Debug("configure for self-signed tls")
-		serverTLSCert, err := tls.LoadX509KeyPair(SelfSignedCertFilePath, SelfSignedKeyFilePath)
+		serverTLSCert, err := tls.LoadX509KeyPair(cnf.CertFilePath, cnf.KeyFilePath)
 		if err != nil {
 			log.Fatalf("Error loading certificate and key file: %v", err)
 		}
@@ -84,7 +80,7 @@ func (s *Server) Start() error {
 
 	log.Info("starting server", "port", s.cnf.Port, "mode", s.cnf.RunMode)
 
-	if s.cnf.RunMode == RunModeHTTPSSelfSigned {
+	if s.cnf.RunMode == RunModeHTTPS {
 		return s.srv.ListenAndServeTLS("", "")
 	}
 

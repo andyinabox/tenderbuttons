@@ -70,7 +70,7 @@ main {
   align-items: center;
   justify-content: center;
 
-  animation-duration: 10s;
+  animation-duration: 5s;
   animation-name: bubble;
   animation-iteration-count: infinite;
   animation-direction: alternate;
@@ -79,15 +79,23 @@ main {
 
 @keyframes buttons {
   0% {
-    transform: skew(1deg, 1deg) scale(100%);
+    transform: skew(0, 0) scale(100%);
+  }
+
+  25% {
+    transform: skew(0.5deg, 0.5deg) scale(103%);
   }
 
   50% {
-    transform: skew(0, 0) scale(102%);
+    transform: skew(0, 0) scale(105%);
+  }
+
+  75% {
+    transform: skew(-0.5deg, -0.5deg) scale(103%);
   }
 
   100% {
-    transform: skew(-1deg, -1deg) scale(100%);
+    transform: skew(0, 0) scale(100%);
   }
 }
 
@@ -100,8 +108,8 @@ form {
   animation-duration: 10s;
   animation-name: buttons;
   animation-iteration-count: infinite;
-  animation-direction: alternate;
-  animation-timing-function: ease-in-out;
+  /* animation-direction: alternate; */
+  animation-timing-function: linear;
 }
 
 input {

@@ -51,7 +51,7 @@ func (r *Router) IndexHandler() http.HandlerFunc {
 		log.Infof("%q", sentence)
 
 		err = r.tpl.ExecuteTemplate(w, "index.html.tmpl", IndexContext{
-			CssProperties: props.GetCSSCustomProperties(sentence),
+			CssProperties: props.GetCSSCustomProperties(sentence, minWords, maxWords),
 			Sentence:      sentence,
 			Tokens:        strings.Split(sentence, " "),
 		})

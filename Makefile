@@ -2,12 +2,8 @@
 watch:
 	reflex -d none -G "assets/*" -s make run-dev
 
-.PHONY: run
-run:
-	go run .
-
 .PHONY: run-dev
-run:
+run-dev:
 	go run . -v -a
 
 .PHONY: run-https

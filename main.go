@@ -4,6 +4,9 @@ import (
 	"embed"
 	"flag"
 	"html/template"
+	"io/fs"
+	"os"
+	"path/filepath"
 
 	"github.com/charmbracelet/log"
 
@@ -23,11 +26,13 @@ var corpus []byte
 var readme []byte
 
 var debug bool
+var loadAssetsFromFs bool
 var serverRunMode string
 
 func init() {
 	flag.BoolVar(&debug, "v", false, "verbose logging")
-	flag.StringVar(&serverRunMode, "m", "http", "server run mode. can be 'http', 'https-ss'")
+	flag.BoolVar(&loadAssetsFromFs, "a", false, "load assets from filesystem (for easier frontend development)")
+	flag.StringVar(&serverRunMode, "m", "http", "server run mode. can be 'http' or 'https'")
 	flag.Parse()
 
 	if debug {
@@ -37,17 +42,36 @@ func init() {
 
 func main() {
 
+	var assetsFs fs.FS
+
+	// load assets from filesystem for development
+	if loadAssetsFromFs {
+		assetsPath, err := filepath.Abs("assets")
+		if err != nil {
+			log.Fatal(err)
+		}
+		assetsFs = os.DirFS(assetsPath)
+		// load assets from embedded data
+	} else {
+		var err error
+		assetsFs, err = fs.Sub(fs.FS(assets), "assets")
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
 	app := app.New(
 		&app.Config{
 			Debug:         debug,
 			ServerRunMode: serverRunMode,
 			Corpus:        corpus,
 			Readme:        readme,
-			Assets:        assets,
+			Assets:        assetsFs,
 			Templates:     template.Must(template.New("").ParseFS(templates, "tmpl/*.tmpl")),
 		},
 	)
 
+	log.Info("starting application", "debug", debug, "mode", serverRunMode, "embeddedAsssets", !loadAssetsFromFs)
 	log.Fatal(app.Start())
 
 }

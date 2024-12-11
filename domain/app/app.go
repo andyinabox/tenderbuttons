@@ -1,13 +1,12 @@
 package app
 
 import (
-	"embed"
 	"html/template"
+	"io/fs"
 
 	"github.com/andyinaobox/tenderbuttons/domain/approuter"
-	"github.com/andyinaobox/tenderbuttons/pkg/handler"
-	"github.com/andyinaobox/tenderbuttons/pkg/server"
-	"github.com/charmbracelet/log"
+	"github.com/andyinaobox/tenderbuttons/pkg/assetshandler"
+	"github.com/andyinaobox/tenderbuttons/pkg/tlsserver"
 )
 
 type Config struct {
@@ -15,14 +14,14 @@ type Config struct {
 	ServerRunMode string
 	Corpus        []byte
 	Readme        []byte
-	Assets        embed.FS
+	Assets        fs.FS
 	Templates     *template.Template
 }
 
 type App struct {
 	router  *approuter.Router
-	handler *handler.Handler
-	server  *server.Server
+	handler *assetshandler.Handler
+	server  *tlsserver.Server
 	cfg     *Config
 }
 
@@ -34,25 +33,28 @@ func New(cfg *Config) *App {
 		Readme: cfg.Readme,
 	})
 
-	h := handler.New(
-		&handler.AssetsConfig{
-			UrlPath: "/assets",
-			SubPath: "assets",
-			FS:      cfg.Assets,
+	handler := assetshandler.New(
+		&assetshandler.Config{
+			AssetsUrlPath:     "/assets",
+			AssetsFS:          cfg.Assets,
+			StripAssetsPrefix: true,
 		},
-		router.Routes(),
 	)
 
-	s := server.New(&server.Config{
-		Handler: h,
-		RunMode: server.RunMode(cfg.ServerRunMode),
+	handler.AddRoute("/", router.IndexHandler())
+	handler.AddRoute("/readme", router.AboutHandler())
+
+	server := tlsserver.New(&tlsserver.Config{
+		Handler:      handler,
+		RunMode:      tlsserver.RunMode(cfg.ServerRunMode),
+		CertFilePath: ".cert/localhost.crt",
+		KeyFilePath:  ".cert/localhost.key",
 	})
 
-	return &App{router, h, s, cfg}
+	return &App{router, handler, server, cfg}
 }
 
 func (a *App) Start() error {
-	log.Info("starting application", "debug", a.cfg.Debug, "mode", a.cfg.ServerRunMode)
 	defer a.server.Close()
 	return a.server.Start()
 }

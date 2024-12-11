@@ -53,7 +53,7 @@ func (h *Handler) AddRoute(path string, handler http.HandlerFunc) {
 
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	// if the url contains the assets path, use the assets hand.er
+	// if the url contains the assets path, use the assets handler
 	if strings.HasPrefix(r.URL.Path, h.cfg.AssetsUrlPath) {
 		log.Debugf("serve using file server: %s", r.URL)
 		h.assetsHandler.ServeHTTP(w, r)

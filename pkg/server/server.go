@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/charmbracelet/log"
-	"golang.org/x/crypto/acme/autocert"
 )
 
 type RunMode string
@@ -31,15 +30,13 @@ func init() {
 }
 
 type Config struct {
-	Port         int
-	Handler      http.Handler
-	RunMode      RunMode
-	AllowedHosts []string // only used for lets encrypt
+	Port    int
+	Handler http.Handler
+	RunMode RunMode
 }
 
 type Server struct {
 	srv *http.Server
-	cm  *autocert.Manager
 	cnf *Config
 }
 

@@ -20,7 +20,7 @@ type AssetsConfig struct {
 	FS      embed.FS // embedded fs
 }
 
-func New(assetsConfig *AssetsConfig, routes []Route) Handler {
+func New(assetsConfig *AssetsConfig, routes []Route) *Handler {
 
 	assetsFs, err := fs.Sub(fs.FS(assetsConfig.FS), assetsConfig.SubPath)
 	if err != nil {
@@ -40,7 +40,7 @@ func New(assetsConfig *AssetsConfig, routes []Route) Handler {
 		})
 	}
 
-	return Handler{
+	return &Handler{
 		mux:           mux,
 		assetsConfig:  assetsConfig,
 		assetsHandler: http.StripPrefix(assetsConfig.UrlPath, http.FileServer(http.FS(assetsFs))),

@@ -1,29 +1,20 @@
-package router
+package props
 
 import (
 	"html/template"
 
 	"github.com/andyinaobox/tenderbuttons/pkg/cssprops"
 	"github.com/andyinaobox/tenderbuttons/pkg/params"
+	"github.com/andyinaobox/tenderbuttons/pkg/randparams"
 )
 
-type DisplayParams struct {
-	RadialStop1  template.CSS
-	LinearAngle1 template.CSS
-	LinearColor1 template.CSS
-	LinearColor2 template.CSS
-	LinearAngle2 template.CSS
-	LinearColor3 template.CSS
-	LinearColor4 template.CSS
-}
+func GetCSSCustomProperties(sentence string) template.HTML {
 
-func getCSSProperties(sentence string) template.HTML {
+	r := randparams.New([]byte(sentence))
 
-	p := params.New([]byte(sentence))
-
-	rs1 := p.GetPercentInRange(30., 50.)
-	la1, la2 := p.GetComplementaryDegrees()
-	lc1, lc3 := p.GetComplementaryHSLAColors(75., 75., 100.)
+	rs1 := r.PercentInRange(30., 50.)
+	la1, la2 := r.ComplementaryDegrees()
+	lc1, lc3 := r.ComplementaryHSLAColors(75., 75., 100.)
 	lc2 := params.NewColorHSLA(lc1.H.Value(), lc1.S.Value(), lc1.L.Value(), 0.)
 	lc4 := params.NewColorHSLA(lc3.H.Value(), lc3.S.Value(), lc3.L.Value(), 0.)
 

@@ -12,9 +12,9 @@ type AboutContext struct {
 	Body template.HTML
 }
 
-func (r *Router) AboutHandler(readme []byte) http.HandlerFunc {
+func (r *Router) AboutHandler() http.HandlerFunc {
 	log.Info("parsing readme")
-	about := blackfriday.Run(readme)
+	about := blackfriday.Run(r.data.Readme)
 
 	return func(w http.ResponseWriter, req *http.Request) {
 		log.Debug("about handler")

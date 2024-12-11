@@ -5,8 +5,10 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/andyinaobox/tenderbuttons/pkg/chains"
 	"github.com/charmbracelet/log"
+
+	"github.com/andyinaobox/tenderbuttons/domain/props"
+	"github.com/andyinaobox/tenderbuttons/pkg/chains"
 )
 
 const (
@@ -20,11 +22,11 @@ type IndexContext struct {
 	Tokens        []string
 }
 
-func (r *Router) IndexHandler(corpus string) http.HandlerFunc {
+func (r *Router) IndexHandler() http.HandlerFunc {
 	// create markov chain
 	log.Info("building chain", "prefixLen", prefixLen)
 	chain := chains.NewChain(2)
-	chain.BuildFromString(corpus)
+	chain.BuildFromString(string(r.data.Corpus))
 
 	return func(w http.ResponseWriter, req *http.Request) {
 		log.Debug("index handler")
@@ -48,7 +50,7 @@ func (r *Router) IndexHandler(corpus string) http.HandlerFunc {
 		log.Infof("%q", sentence)
 
 		err = r.tpl.ExecuteTemplate(w, "index.html.tmpl", IndexContext{
-			CssProperties: getCSSProperties(sentence),
+			CssProperties: props.GetCSSCustomProperties(sentence),
 			Sentence:      sentence,
 			Tokens:        strings.Split(sentence, " "),
 		})

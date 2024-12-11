@@ -1,6 +1,7 @@
 package router
 
 import (
+	"html/template"
 	"net/http"
 	"strings"
 
@@ -14,7 +15,7 @@ const (
 )
 
 type IndexContext struct {
-	DisplayParams *DisplayParams
+	CssProperties template.HTML
 	Sentence      string
 	Tokens        []string
 }
@@ -47,7 +48,7 @@ func (r *Router) IndexHandler(corpus string) http.HandlerFunc {
 		log.Infof("%q", sentence)
 
 		err = r.tpl.ExecuteTemplate(w, "index.html.tmpl", IndexContext{
-			DisplayParams: NewDisplayParams(sentence),
+			CssProperties: getCSSProperties(sentence),
 			Sentence:      sentence,
 			Tokens:        strings.Split(sentence, " "),
 		})

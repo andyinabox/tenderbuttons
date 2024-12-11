@@ -18,4 +18,4 @@ EXPOSE 8080
 RUN go build -o /main .
 
 # Run the applicatio
-CMD ["/main", "-v", "-m", "https-le"]
+CMD ["/main"]

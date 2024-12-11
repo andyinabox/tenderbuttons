@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	maxWords  = 100
+	maxWords  = 35
 	prefixLen = 2
 )
 

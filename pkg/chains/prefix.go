@@ -5,8 +5,15 @@ import "strings"
 // Prefix is a Markov chain prefix of one or more words.
 type Prefix []string
 
+// NewPrefix creates a new prefix from a string containing
+// space-separated tokens
 func NewPrefix(str string) Prefix {
 	return Prefix(strings.Split(str, " "))
+}
+
+// First returns the first token in the prefix
+func (p Prefix) First() string {
+	return p[0]
 }
 
 // String returns the Prefix as a string (for use as a map key).

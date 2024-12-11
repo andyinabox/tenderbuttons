@@ -14,6 +14,10 @@ type Config struct {
 	ServerRunMode string
 	Corpus        []byte
 	Readme        []byte
+	BgImageUrls   []string
+	MinWords      int
+	MaxWords      int
+	PrefixLength  int
 	Assets        fs.FS
 	Templates     *template.Template
 }
@@ -28,9 +32,13 @@ type App struct {
 func New(cfg *Config) *App {
 
 	// create router
-	router := approuter.New(cfg.Templates, &approuter.Content{
-		Corpus: cfg.Corpus,
-		Readme: cfg.Readme,
+	router := approuter.New(cfg.Templates, &approuter.Config{
+		Corpus:       cfg.Corpus,
+		Readme:       cfg.Readme,
+		BgImageUrls:  cfg.BgImageUrls,
+		MinWords:     cfg.MinWords,
+		MaxWords:     cfg.MaxWords,
+		PrefixLength: cfg.PrefixLength,
 	})
 
 	handler := assetshandler.New(

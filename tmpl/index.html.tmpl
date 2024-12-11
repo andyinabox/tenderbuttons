@@ -12,14 +12,15 @@
     {{ .CssProperties }}
   </head>
   <body id="index">
+    <div id="wrap">
     <main>
-    <form method="post" action="/">
-      {{- range $tok := .Tokens }}
-      <input type="submit" name="token" value="{{ $tok }}" />
-      {{- end}}
-    </form>
-
-    <a class="about-link" href="/readme">❓</a>
+      <form method="post" action="/">
+        {{- range $tok := .Tokens }}
+        <input type="submit" name="token" value="{{ $tok }}" />
+        {{- end}}
+      </form>
+      <a class="about-link" href="/readme">❓</a>
     </main>
+    </div>
   </body>
 </html>

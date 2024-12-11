@@ -7,14 +7,7 @@ import (
 
 	"github.com/charmbracelet/log"
 
-	"github.com/andyinaobox/tenderbuttons/domain/props"
 	"github.com/andyinaobox/tenderbuttons/pkg/chains"
-)
-
-const (
-	minWords  = 3
-	maxWords  = 35
-	prefixLen = 2
 )
 
 type IndexContext struct {
@@ -25,9 +18,9 @@ type IndexContext struct {
 
 func (r *Router) IndexHandler() http.HandlerFunc {
 	// create markov chain
-	log.Info("building chain", "prefixLen", prefixLen)
-	chain := chains.NewChain(2)
-	chain.BuildFromString(string(r.content.Corpus))
+	log.Info("building chain", "prefixLen", r.cfg.PrefixLength)
+	chain := chains.NewChain(r.cfg.PrefixLength)
+	chain.BuildFromString(string(r.cfg.Corpus))
 
 	return func(w http.ResponseWriter, req *http.Request) {
 		log.Debug("index handler")
@@ -39,19 +32,19 @@ func (r *Router) IndexHandler() http.HandlerFunc {
 		// create sentance from token
 		if tok, ok := req.Form["token"]; ok && tok[0] != "" {
 			log.Debugf("generating new sentence from %q", tok[0])
-			sentence = chain.GenerateFromToken(tok[0], minWords, maxWords)
+			sentence = chain.GenerateFromToken(tok[0], r.cfg.MinWords, r.cfg.MaxWords)
 		}
 
 		// create sentance from skratch
 		if sentence == "" {
 			log.Debug("generate new sentence from scratch")
-			sentence = chain.Generate(minWords, maxWords)
+			sentence = chain.Generate(r.cfg.MinWords, r.cfg.MaxWords)
 		}
 
 		log.Infof("%q", sentence)
 
 		err = r.tpl.ExecuteTemplate(w, "index.html.tmpl", IndexContext{
-			CssProperties: props.GetCSSCustomProperties(sentence, minWords, maxWords),
+			CssProperties: r.getCSSCustomProperties(sentence),
 			Sentence:      sentence,
 			Tokens:        strings.Split(sentence, " "),
 		})

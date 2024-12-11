@@ -8,5 +8,10 @@ func (r *Rand) Degrees() params.Degrees {
 
 func (r *Rand) ComplementaryDegrees() (params.Degrees, params.Degrees) {
 	d := r.Degrees()
-	return d, 360 - d
+	return d, d + 180
+}
+
+func (r *Rand) ComplementaryDegreesTriad() (params.Degrees, params.Degrees, params.Degrees) {
+	d := r.Degrees()
+	return d, d + 120, d + 240
 }

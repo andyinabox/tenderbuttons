@@ -9,17 +9,19 @@ import (
 )
 
 type AboutContext struct {
-	Body template.HTML
+	CssProperties template.HTML
+	Body          template.HTML
 }
 
 func (r *Router) AboutHandler() http.HandlerFunc {
 	log.Info("parsing readme")
-	about := blackfriday.Run(r.content.Readme)
+	about := blackfriday.Run(r.cfg.Readme)
 
 	return func(w http.ResponseWriter, req *http.Request) {
 		log.Debug("about handler")
 		err := r.tpl.ExecuteTemplate(w, "about.html.tmpl", AboutContext{
-			Body: template.HTML(about),
+			CssProperties: r.getCSSCustomProperties("tender buttons"),
+			Body:          template.HTML(about),
 		})
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)

@@ -4,16 +4,20 @@ import (
 	"html/template"
 )
 
-type Content struct {
-	Corpus []byte
-	Readme []byte
+type Config struct {
+	Corpus       []byte
+	Readme       []byte
+	BgImageUrls  []string
+	MinWords     int
+	MaxWords     int
+	PrefixLength int
 }
 
 type Router struct {
-	tpl     *template.Template
-	content *Content
+	tpl *template.Template
+	cfg *Config
 }
 
-func New(templates *template.Template, content *Content) *Router {
-	return &Router{templates, content}
+func New(templates *template.Template, cfg *Config) *Router {
+	return &Router{templates, cfg}
 }

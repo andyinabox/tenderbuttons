@@ -4,7 +4,7 @@ import (
 	"embed"
 	"html/template"
 
-	"github.com/andyinaobox/tenderbuttons/domain/router"
+	"github.com/andyinaobox/tenderbuttons/domain/approuter"
 	"github.com/andyinaobox/tenderbuttons/pkg/handler"
 	"github.com/andyinaobox/tenderbuttons/pkg/server"
 	"github.com/charmbracelet/log"
@@ -20,7 +20,7 @@ type Config struct {
 }
 
 type App struct {
-	router  *router.Router
+	router  *approuter.Router
 	handler *handler.Handler
 	server  *server.Server
 	cfg     *Config
@@ -29,7 +29,7 @@ type App struct {
 func New(cfg *Config) *App {
 
 	// create router
-	r := router.New(cfg.Templates, &router.Data{
+	router := approuter.New(cfg.Templates, &approuter.Content{
 		Corpus: cfg.Corpus,
 		Readme: cfg.Readme,
 	})
@@ -40,7 +40,7 @@ func New(cfg *Config) *App {
 			SubPath: "assets",
 			FS:      cfg.Assets,
 		},
-		r.Routes(),
+		router.Routes(),
 	)
 
 	s := server.New(&server.Config{
@@ -48,7 +48,7 @@ func New(cfg *Config) *App {
 		RunMode: server.RunMode(cfg.ServerRunMode),
 	})
 
-	return &App{r, h, s, cfg}
+	return &App{router, h, s, cfg}
 }
 
 func (a *App) Start() error {

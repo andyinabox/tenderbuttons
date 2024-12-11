@@ -1,4 +1,4 @@
-package router
+package approuter
 
 import (
 	"html/template"
@@ -14,7 +14,7 @@ type AboutContext struct {
 
 func (r *Router) AboutHandler() http.HandlerFunc {
 	log.Info("parsing readme")
-	about := blackfriday.Run(r.data.Readme)
+	about := blackfriday.Run(r.content.Readme)
 
 	return func(w http.ResponseWriter, req *http.Request) {
 		log.Debug("about handler")

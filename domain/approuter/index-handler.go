@@ -1,4 +1,4 @@
-package router
+package approuter
 
 import (
 	"html/template"
@@ -26,7 +26,7 @@ func (r *Router) IndexHandler() http.HandlerFunc {
 	// create markov chain
 	log.Info("building chain", "prefixLen", prefixLen)
 	chain := chains.NewChain(2)
-	chain.BuildFromString(string(r.data.Corpus))
+	chain.BuildFromString(string(r.content.Corpus))
 
 	return func(w http.ResponseWriter, req *http.Request) {
 		log.Debug("index handler")

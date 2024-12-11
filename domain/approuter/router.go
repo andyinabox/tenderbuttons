@@ -1,4 +1,4 @@
-package router
+package approuter
 
 import (
 	"html/template"
@@ -6,18 +6,18 @@ import (
 	"github.com/andyinaobox/tenderbuttons/pkg/handler"
 )
 
-type Data struct {
+type Content struct {
 	Corpus []byte
 	Readme []byte
 }
 
 type Router struct {
-	tpl  *template.Template
-	data *Data
+	tpl     *template.Template
+	content *Content
 }
 
-func New(tpl *template.Template, data *Data) *Router {
-	return &Router{tpl, data}
+func New(templates *template.Template, content *Content) *Router {
+	return &Router{templates, content}
 }
 
 func (r *Router) Routes() []handler.Route {

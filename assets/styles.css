@@ -48,28 +48,8 @@ html {
   }
 }
 
-/* @keyframes background {
-  0% {
-    background-size: 100% 100%;
-    background-position: 50% 50%;
-  }
-
-  100% {
-    background-size: 150% 150%;
-    background-position: 30% 30%;
-  }
-} */
-
 body {
-  background: var(--linear-gradient-1), var(--linear-gradient-2),
-    url('/assets/check.png');
-
-  /*   animation-duration: 5s;
-  animation-name: background;
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
-  animation-timing-function: ease-in-out;
-   */
+  background: var(--linear-gradient-1), var(--linear-gradient-2);
   margin: 0;
   padding: 0;
 }

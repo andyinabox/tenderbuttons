@@ -60,7 +60,7 @@ func main() {
 			ServerRunMode: serverRunMode,
 			Corpus:        corpus,
 			Readme:        readme,
-			MinWords:      5,
+			MinWords:      3,
 			MaxWords:      35,
 			PrefixLength:  3,
 			Assets:        assetsFs,

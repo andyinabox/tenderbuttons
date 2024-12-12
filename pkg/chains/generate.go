@@ -41,7 +41,7 @@ func (c *Chain) generate(minWords int, maxWords int, startPrefix Prefix, startWo
 		// the likelyhood of using the end choice will
 		// increase as the numbers get largers
 		p := float32(i-minWords) / float32(maxWords)
-		r := rand.Float32()
+		r := rand.Float32() * 0.9
 
 		return p > r
 	}
@@ -74,7 +74,9 @@ outer:
 			choices := c.chain[p.String()]
 			endChoices := c.endings[p.String()]
 
-			if len(endChoices) != 0 && shouldUseEndChoices(i) {
+			shouldTryForEnd := shouldUseEndChoices(i)
+
+			if len(endChoices) != 0 && shouldTryForEnd {
 				choices = endChoices
 			}
 
@@ -90,7 +92,7 @@ outer:
 			words = append(words, next)
 
 			// finish if the last word has a period
-			if i > minWords-c.cfg.PrefixLength && strings.Contains(next, ".") {
+			if shouldTryForEnd && strings.Contains(next, ".") {
 				break outer
 			}
 

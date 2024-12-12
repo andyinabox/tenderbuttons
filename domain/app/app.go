@@ -4,7 +4,6 @@ import (
 	"html/template"
 	"io/fs"
 
-	"github.com/andyinaobox/tenderbuttons/domain/approuter"
 	"github.com/andyinaobox/tenderbuttons/pkg/assetshandler"
 	"github.com/andyinaobox/tenderbuttons/pkg/tlsserver"
 )
@@ -22,22 +21,15 @@ type Config struct {
 }
 
 type App struct {
-	router  *approuter.Router
-	handler *assetshandler.Handler
-	server  *tlsserver.Server
-	cfg     *Config
+	server *tlsserver.Server
+	cfg    *Config
 }
 
 func New(cfg *Config) *App {
 
-	// create router
-	router := approuter.New(cfg.Templates, &approuter.Config{
-		Corpus:       cfg.Corpus,
-		Readme:       cfg.Readme,
-		MinWords:     cfg.MinWords,
-		MaxWords:     cfg.MaxWords,
-		PrefixLength: cfg.PrefixLength,
-	})
+	app := &App{
+		cfg: cfg,
+	}
 
 	handler := assetshandler.New(
 		&assetshandler.Config{
@@ -47,17 +39,17 @@ func New(cfg *Config) *App {
 		},
 	)
 
-	handler.AddRoute("/", router.IndexHandler())
-	handler.AddRoute("/readme", router.AboutHandler())
+	handler.AddRoute("/", app.IndexHandler())
+	handler.AddRoute("/readme", app.AboutHandler())
 
-	server := tlsserver.New(&tlsserver.Config{
+	app.server = tlsserver.New(&tlsserver.Config{
 		Handler:      handler,
 		RunMode:      tlsserver.RunMode(cfg.ServerRunMode),
 		CertFilePath: ".cert/localhost.crt",
 		KeyFilePath:  ".cert/localhost.key",
 	})
 
-	return &App{router, handler, server, cfg}
+	return app
 }
 
 func (a *App) Start() error {

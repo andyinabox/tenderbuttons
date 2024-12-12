@@ -24,14 +24,17 @@ var corpus []byte
 //go:embed README.md
 var readme []byte
 
-var debug bool
-var loadAssetsFromFs bool
+var debug, loadAssetsFromFs bool
 var serverRunMode string
+var prefixLength, maxWords, minWords int
 
 func init() {
 	flag.BoolVar(&debug, "v", false, "verbose logging")
 	flag.BoolVar(&loadAssetsFromFs, "a", false, "load assets from filesystem (for easier frontend development)")
 	flag.StringVar(&serverRunMode, "m", "http", "server run mode. can be 'http' or 'https'")
+	flag.IntVar(&prefixLength, "p", 3, "markov chain prefix length")
+	flag.IntVar(&minWords, "min", 3, "min words in a sentence")
+	flag.IntVar(&maxWords, "max", 35, "max words in a sentence")
 	flag.Parse()
 
 	if debug {
@@ -60,9 +63,9 @@ func main() {
 			ServerRunMode: serverRunMode,
 			Corpus:        corpus,
 			Readme:        readme,
-			MinWords:      3,
-			MaxWords:      35,
-			PrefixLength:  3,
+			MinWords:      minWords,
+			MaxWords:      maxWords,
+			PrefixLength:  prefixLength,
 			Assets:        assetsFs,
 			Templates:     template.Must(template.New("").ParseFS(templates, "tmpl/*.tmpl")),
 		},

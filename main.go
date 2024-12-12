@@ -62,7 +62,7 @@ func main() {
 			Readme:        readme,
 			MinWords:      5,
 			MaxWords:      35,
-			PrefixLength:  2,
+			PrefixLength:  3,
 			Assets:        assetsFs,
 			Templates:     template.Must(template.New("").ParseFS(templates, "tmpl/*.tmpl")),
 		},

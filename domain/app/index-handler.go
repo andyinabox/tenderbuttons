@@ -19,7 +19,11 @@ type IndexContext struct {
 func (a *App) IndexHandler() http.HandlerFunc {
 	// create markov chain
 	log.Info("building chain", "prefixLen", a.cfg.PrefixLength)
-	chain := chains.NewChain(a.cfg.PrefixLength)
+	chain := chains.NewChain(&chains.Config{
+		PrefixLength: a.cfg.PrefixLength,
+		MinWords:     a.cfg.MinWords,
+		MaxWords:     a.cfg.MaxWords,
+	})
 	chain.BuildFromString(string(a.cfg.Corpus))
 
 	return func(w http.ResponseWriter, req *http.Request) {
@@ -32,13 +36,13 @@ func (a *App) IndexHandler() http.HandlerFunc {
 		// create sentance from token
 		if tok, ok := req.Form["token"]; ok && tok[0] != "" {
 			log.Debugf("generating new sentence from %q", tok[0])
-			sentence = chain.GenerateFromToken(tok[0], a.cfg.MinWords, a.cfg.MaxWords)
+			sentence = chain.GenerateFromToken(tok[0])
 		}
 
 		// create sentance from skratch
 		if sentence == "" {
 			log.Debug("generate new sentence from scratch")
-			sentence = chain.Generate(a.cfg.MinWords, a.cfg.MaxWords)
+			sentence = chain.Generate()
 		}
 
 		log.Infof("%q", sentence)

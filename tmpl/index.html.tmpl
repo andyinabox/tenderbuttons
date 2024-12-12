@@ -18,10 +18,10 @@
         {{- range $tok := .Tokens }}
         <input type="submit" name="token" value="{{ $tok }}" />
         {{- end}}
+        <input type="hidden" name="prev" value="{{.Sentence}}" />
       </form>
       <a class="about-link" href="/readme">❓</a>
     </main>
     </div>
-    <script src="/assets/script.js"></script>
   </body>
 </html>

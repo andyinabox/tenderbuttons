@@ -3,6 +3,7 @@ package app
 import (
 	"html/template"
 	"io/fs"
+	"net/http"
 
 	"github.com/andyinaobox/tenderbuttons/pkg/assetshandler"
 	"github.com/andyinaobox/tenderbuttons/pkg/tlsserver"
@@ -41,6 +42,9 @@ func New(cfg *Config) *App {
 
 	handler.AddRoute("/", app.IndexHandler())
 	handler.AddRoute("/readme", app.AboutHandler())
+	handler.AddRoute("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/assets/icon/favicon.ico", http.StatusMovedPermanently)
+	})
 
 	app.server = tlsserver.New(&tlsserver.Config{
 		Handler:      handler,

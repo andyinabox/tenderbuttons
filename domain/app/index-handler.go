@@ -19,26 +19,47 @@ type IndexContext struct {
 func (a *App) IndexHandler() http.HandlerFunc {
 	// create markov chain
 	log.Info("building chain", "prefixLen", a.cfg.PrefixLength)
-	chain := chains.NewChain(a.cfg.PrefixLength)
+	chain := chains.NewChain(&chains.Config{
+		PrefixLength: a.cfg.PrefixLength,
+		MinWords:     a.cfg.MinWords,
+		MaxWords:     a.cfg.MaxWords,
+	})
 	chain.BuildFromString(string(a.cfg.Corpus))
 
 	return func(w http.ResponseWriter, req *http.Request) {
-		log.Debug("index handler")
 		var err error
-		var sentence string
+		var token, prev, sentence string
 
 		req.ParseForm()
 
-		// create sentance from token
-		if tok, ok := req.Form["token"]; ok && tok[0] != "" {
-			log.Debugf("generating new sentence from %q", tok[0])
-			sentence = chain.GenerateFromToken(tok[0], a.cfg.MinWords, a.cfg.MaxWords)
+		if len(req.Form["token"]) > 0 {
+			token = req.Form["token"][0]
+		}
+		if len(req.Form["prev"]) > 0 {
+			prev = req.Form["prev"][0]
 		}
 
-		// create sentance from skratch
+		log.Debug("index handler", "token", token, "prev", prev)
+
+		// create sentance from token
+		if token != "" {
+			log.Debugf("generating new sentence from %q", token)
+
+			for i := 0; i < 3; i++ {
+				try := chain.GenerateFromToken(token)
+
+				// try to come up with a new sentence
+				if strings.TrimSpace(try) != strings.TrimSpace(prev) {
+					sentence = try
+					break
+				}
+			}
+		}
+
+		// create sentance from scratch
 		if sentence == "" {
 			log.Debug("generate new sentence from scratch")
-			sentence = chain.Generate(a.cfg.MinWords, a.cfg.MaxWords)
+			sentence = chain.Generate()
 		}
 
 		log.Infof("%q", sentence)

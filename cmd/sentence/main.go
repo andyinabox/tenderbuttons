@@ -32,10 +32,14 @@ func main() {
 		panic(err)
 	}
 
-	chain := chains.NewChain(2)
+	chain := chains.NewChain(&chains.Config{
+		PrefixLength: 2,
+		MinWords:     minWords,
+		MaxWords:     maxWords,
+	})
 	chain.Build(file)
 
-	sentence := chain.Generate(minWords, maxWords)
+	sentence := chain.Generate()
 
 	fmt.Println(sentence)
 }

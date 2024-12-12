@@ -1,4 +1,4 @@
-package approuter
+package app
 
 import (
 	"html/template"
@@ -9,12 +9,12 @@ import (
 	"github.com/andyinaobox/tenderbuttons/pkg/randparams"
 )
 
-func (r *Router) getCSSCustomProperties(sentence string) template.HTML {
+func (a *App) getCSSCustomProperties(sentence string) template.HTML {
 
 	rng := randparams.New([]byte(sentence))
 
 	// value of 0-1 based on the sentence lenths in words (based on max an min values)
-	sentenceSpread := float32(len(strings.Split(sentence, " "))-r.cfg.MinWords) / float32(r.cfg.MaxWords-r.cfg.MinWords)
+	sentenceSpread := float32(len(strings.Split(sentence, " "))-a.cfg.MinWords) / float32(a.cfg.MaxWords-a.cfg.MinWords)
 
 	h2, h3 := rng.ComplementaryDegrees()
 

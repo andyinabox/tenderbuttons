@@ -1,4 +1,4 @@
-package approuter
+package app
 
 import (
 	"html/template"
@@ -16,11 +16,11 @@ type IndexContext struct {
 	Tokens        []string
 }
 
-func (r *Router) IndexHandler() http.HandlerFunc {
+func (a *App) IndexHandler() http.HandlerFunc {
 	// create markov chain
-	log.Info("building chain", "prefixLen", r.cfg.PrefixLength)
-	chain := chains.NewChain(r.cfg.PrefixLength)
-	chain.BuildFromString(string(r.cfg.Corpus))
+	log.Info("building chain", "prefixLen", a.cfg.PrefixLength)
+	chain := chains.NewChain(a.cfg.PrefixLength)
+	chain.BuildFromString(string(a.cfg.Corpus))
 
 	return func(w http.ResponseWriter, req *http.Request) {
 		log.Debug("index handler")
@@ -32,19 +32,19 @@ func (r *Router) IndexHandler() http.HandlerFunc {
 		// create sentance from token
 		if tok, ok := req.Form["token"]; ok && tok[0] != "" {
 			log.Debugf("generating new sentence from %q", tok[0])
-			sentence = chain.GenerateFromToken(tok[0], r.cfg.MinWords, r.cfg.MaxWords)
+			sentence = chain.GenerateFromToken(tok[0], a.cfg.MinWords, a.cfg.MaxWords)
 		}
 
 		// create sentance from skratch
 		if sentence == "" {
 			log.Debug("generate new sentence from scratch")
-			sentence = chain.Generate(r.cfg.MinWords, r.cfg.MaxWords)
+			sentence = chain.Generate(a.cfg.MinWords, a.cfg.MaxWords)
 		}
 
 		log.Infof("%q", sentence)
 
-		err = r.tpl.ExecuteTemplate(w, "index.html.tmpl", IndexContext{
-			CssProperties: r.getCSSCustomProperties(sentence),
+		err = a.cfg.Templates.ExecuteTemplate(w, "index.html.tmpl", IndexContext{
+			CssProperties: a.getCSSCustomProperties(sentence),
 			Sentence:      sentence,
 			Tokens:        strings.Split(sentence, " "),
 		})

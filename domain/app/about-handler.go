@@ -1,4 +1,4 @@
-package approuter
+package app
 
 import (
 	"html/template"
@@ -13,16 +13,19 @@ type AboutContext struct {
 	Body          template.HTML
 }
 
-func (r *Router) AboutHandler() http.HandlerFunc {
+func (a *App) AboutHandler() http.HandlerFunc {
+
 	log.Info("parsing readme")
-	about := blackfriday.Run(r.cfg.Readme)
+	about := blackfriday.Run(a.cfg.Readme)
 
 	return func(w http.ResponseWriter, req *http.Request) {
+
 		log.Debug("about handler")
-		err := r.tpl.ExecuteTemplate(w, "about.html.tmpl", AboutContext{
-			CssProperties: r.getCSSCustomProperties("tender buttons"),
+		err := a.cfg.Templates.ExecuteTemplate(w, "about.html.tmpl", AboutContext{
+			CssProperties: a.getCSSCustomProperties("tender buttons"),
 			Body:          template.HTML(about),
 		})
+
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 		}

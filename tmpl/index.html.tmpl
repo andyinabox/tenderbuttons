@@ -11,8 +11,7 @@
     <link rel="stylesheet" href="/assets/styles.css" />
     {{ .CssProperties }}
   </head>
-  <body id="index">
-    <div id="wrap">
+  <body class="index">
     <main>
       <form method="post" action="/">
         {{- range $tok := .Tokens }}
@@ -22,6 +21,5 @@
       </form>
       <a class="about-link" href="/about">❓</a>
     </main>
-    </div>
   </body>
 </html>

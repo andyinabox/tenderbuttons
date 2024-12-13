@@ -1,51 +1,45 @@
+/*
+ * vars
+ */
 :root {
-  --radial-stop-1: 45%;
-  --radial-color-1: rgba(255, 248, 223, 1);
-  --radial-color-2: rgba(195, 164, 138, 0.9);
-  --radial-color-3: rgba(255, 247, 225, 0.1);
+  /* these vars will be overwritten by values from the server */
+  --rg-stop-1: 45%;
 
-  --linear-angle-1: 0deg;
-  --linear-stop-1: 80%;
-  --linear-color-1: hsla(var(--linear-angle-1) 50 70 / 100%);
-  --linear-color-2: hsla(var(--linear-angle-1) 50 70 / 30%);
+  --lg-angle-1: 0deg;
+  --lg-angle-2: 120deg;
+  --lg-angle-3: 360deg;
 
-  --linear-angle-2: 120deg;
-  --linear-stop-2: 80%;
-  --linear-color-3: hsla(var(--linear-angle-2) 50 70 / 100%);
-  --linear-color-4: hsla(var(--linear-angle-2) 50 70 / 30%);
+  --lg-hue-1: 0deg;
+  --lg-hue-2: 0deg;
+  --lg-hue-3: 0deg;
 
-  --linear-angle-3: 360deg;
-  --linear-stop-3: 80%;
-  --linear-color-5: hsla(var(--linear-angle-3) 50 70 / 100%);
-  --linear-color-6: hsla(var(--linear-angle-3) 50 70 / 30%);
-
+  /* these are just for convenience */
   --radial-gradient: radial-gradient(
     circle,
-    var(--radial-color-1) 0%,
-    var(--radial-color-2) var(--radial-stop-1),
-    var(--radial-color-3) 100%
+    hsl(47deg 100% 94% / 100%) 0%,
+    hsl(27deg 32% 65% / 90%) var(--rg-stop-1),
+    hsl(44deg 100% 64% / 10%) 100%
   );
   --linear-gradient-1: linear-gradient(
-    var(--linear-angle-1),
-    var(--linear-color-1),
-    var(--linear-color-2) var(--linear-stop-1)
+    var(--lg-angle-1),
+    hsla(var(--lg-hue-1) 50 70 / 100%),
+    hsla(var(--lg-hue-1) 50 70 / 30%) 80%
   );
   --linear-gradient-2: linear-gradient(
-    var(--linear-angle-2),
-    var(--linear-color-3),
-    var(--linear-color-4) var(--linear-stop-2)
+    var(--lg-angle-2),
+    hsla(var(--lg-hue-2) 50 70 / 100%),
+    hsla(var(--lg-hue-2) 50 70 / 30%) 80%
   );
   --linear-gradient-3: linear-gradient(
-    var(--linear-angle-3),
-    var(--linear-color-5),
-    var(--linear-color-6) var(--linear-stop-3)
+    var(--lg-angle-3),
+    hsla(var(--lg-hue-3) 50 70 / 100%),
+    hsla(var(--lg-hue-3) 50 70 / 30%) 80%
   );
 }
 
-html {
-  font-size: calc(75% + 2vw);
-}
-
+/*
+ * animations
+ */
 @keyframes bubble {
   0% {
     background-size: 100% 100%;
@@ -56,40 +50,6 @@ html {
     background-size: 120% 120%;
     background-position: 40% 40%;
   }
-}
-
-body {
-  margin: 0;
-  padding: 0;
-}
-
-body#index {
-  text-align: center;
-}
-
-body#about main {
-  justify-content: flex-start;
-  padding-top: 1em;
-}
-
-#wrap {
-  background: var(--linear-gradient-1), var(--linear-gradient-2),
-    var(--linear-gradient-3);
-}
-
-main {
-  background: var(--radial-gradient);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  animation-duration: 5s;
-  animation-name: bubble;
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
-  animation-timing-function: ease-in-out;
 }
 
 @keyframes buttons {
@@ -114,35 +74,58 @@ main {
   }
 }
 
+/*
+ * base styles
+ */
+html {
+  font-size: min(calc(75% + 2vw), 35px);
+}
+
+body {
+  background: var(--linear-gradient-1), var(--linear-gradient-2),
+    var(--linear-gradient-3);
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  background: var(--radial-gradient);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  /* background gradient animation */
+  animation-duration: 5s;
+  animation-name: bubble;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-timing-function: ease-in-out;
+}
+
+/* button container */
 form {
   display: block;
   max-width: 50%;
   margin: 0;
   padding: 0;
 
+  /* pulsing animation */
   animation-duration: 10s;
   animation-name: buttons;
   animation-iteration-count: infinite;
-  /* animation-direction: alternate; */
   animation-timing-function: linear;
 }
 
-input {
+/* button styles */
+input[type='submit'] {
   cursor: pointer;
   font-size: 1rem;
   margin-bottom: 0.25em;
 }
 
-section.about {
-  max-width: 1024px;
-  background: rgba(255, 255, 255, 0.5);
-  padding: 1rem;
-  margin: 1rem;
-  font-size: 0.8rem;
-  font-family: serif;
-  line-height: 1.2em;
-}
-
+/* about page link */
 a.about-link {
   position: absolute;
   display: block;
@@ -150,5 +133,31 @@ a.about-link {
   bottom: 0;
   padding: 0.5em;
   text-decoration: none;
-  font-family: monospace;
+}
+
+/*
+ * index page
+ */
+
+body.index {
+  text-align: center;
+}
+
+/*
+ * about page
+ */
+
+body.about main {
+  justify-content: flex-start;
+  padding-top: 1em;
+}
+
+section.about {
+  max-width: 1024px;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 1rem 2rem;
+  margin: 1rem;
+  font-size: 0.8rem;
+  font-family: Georgia, serif;
+  line-height: 1.2em;
 }

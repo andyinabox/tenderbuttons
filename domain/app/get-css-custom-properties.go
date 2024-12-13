@@ -4,9 +4,9 @@ import (
 	"html/template"
 	"strings"
 
-	"github.com/andyinaobox/tenderbuttons/pkg/cssprops"
-	"github.com/andyinaobox/tenderbuttons/pkg/params"
-	"github.com/andyinaobox/tenderbuttons/pkg/randparams"
+	"gitlab.com/andyinaobox/tenderbuttons/pkg/cssprops"
+	"gitlab.com/andyinaobox/tenderbuttons/pkg/params"
+	"gitlab.com/andyinaobox/tenderbuttons/pkg/randparams"
 )
 
 func (a *App) getCSSCustomProperties(sentence string) template.HTML {
@@ -22,7 +22,7 @@ func (a *App) getCSSCustomProperties(sentence string) template.HTML {
 
 	la1, la2 := rng.ComplementaryDegrees()
 
-	var lcSaturation float32 = 75.
+	var lcSaturation float32 = 50.
 	var lcLightness float32 = 75.
 	var lcStartOpacity float32 = 100.
 	var lcEndOpacity float32 = 30.

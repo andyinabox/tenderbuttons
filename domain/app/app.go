@@ -5,15 +5,15 @@ import (
 	"io/fs"
 	"net/http"
 
-	"github.com/andyinaobox/tenderbuttons/pkg/assetshandler"
-	"github.com/andyinaobox/tenderbuttons/pkg/tlsserver"
+	"gitlab.com/andyinaobox/tenderbuttons/pkg/assetshandler"
+	"gitlab.com/andyinaobox/tenderbuttons/pkg/tlsserver"
 )
 
 type Config struct {
 	Debug         bool
 	ServerRunMode string
 	Corpus        []byte
-	Readme        []byte
+	AboutContent  []byte
 	MinWords      int
 	MaxWords      int
 	PrefixLength  int

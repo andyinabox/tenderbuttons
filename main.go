@@ -9,7 +9,7 @@ import (
 
 	"github.com/charmbracelet/log"
 
-	"github.com/andyinaobox/tenderbuttons/domain/app"
+	"gitlab.com/andyinaobox/tenderbuttons/domain/app"
 )
 
 //go:embed tmpl/*
@@ -21,8 +21,8 @@ var assets embed.FS
 //go:embed corpus/tb.txt
 var corpus []byte
 
-//go:embed README.md
-var readme []byte
+//go:embed ABOUT.md
+var aboutContent []byte
 
 var debug, loadAssetsFromFs bool
 var serverRunMode string
@@ -62,7 +62,7 @@ func main() {
 			Debug:         debug,
 			ServerRunMode: serverRunMode,
 			Corpus:        corpus,
-			Readme:        readme,
+			AboutContent:  aboutContent,
 			MinWords:      minWords,
 			MaxWords:      maxWords,
 			PrefixLength:  prefixLength,

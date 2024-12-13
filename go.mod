@@ -1,4 +1,4 @@
-module github.com/andyinaobox/tenderbuttons
+module gitlab.com/andyinaobox/tenderbuttons
 
 go 1.22.1
 

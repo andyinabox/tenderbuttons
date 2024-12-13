@@ -130,10 +130,6 @@ section.about {
   font-size: 0.8rem;
 }
 
-section.about h1 {
-  display: none;
-}
-
 a.about-link {
   position: absolute;
   display: block;

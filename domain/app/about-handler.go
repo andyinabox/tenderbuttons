@@ -15,8 +15,8 @@ type AboutContext struct {
 
 func (a *App) AboutHandler() http.HandlerFunc {
 
-	log.Info("parsing readme")
-	about := blackfriday.Run(a.cfg.Readme)
+	log.Info("parsing about content")
+	about := blackfriday.Run(a.cfg.AboutContent, blackfriday.WithExtensions(blackfriday.CommonExtensions|blackfriday.Footnotes))
 
 	return func(w http.ResponseWriter, req *http.Request) {
 

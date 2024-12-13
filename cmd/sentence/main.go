@@ -5,7 +5,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/andyinaobox/tenderbuttons/pkg/chains"
+	"gitlab.com/andyinaobox/tenderbuttons/pkg/chains"
 )
 
 const pathToCorpus = "corpus/tb.txt"

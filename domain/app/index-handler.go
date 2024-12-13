@@ -7,7 +7,7 @@ import (
 
 	"github.com/charmbracelet/log"
 
-	"github.com/andyinaobox/tenderbuttons/pkg/chains"
+	"gitlab.com/andyinaobox/tenderbuttons/pkg/chains"
 )
 
 type IndexContext struct {

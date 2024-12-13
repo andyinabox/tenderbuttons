@@ -9,8 +9,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/andyinaobox/tenderbuttons/pkg/chains"
 	"github.com/charmbracelet/log"
+	"gitlab.com/andyinaobox/tenderbuttons/pkg/chains"
 )
 
 const pathToCorpus = "corpus/tb.txt"

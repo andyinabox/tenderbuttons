@@ -2,5 +2,8 @@
 
 http://tenderbuttons.click
 
-Learn more of the "why" in [ABOUT.md](ABOUT.md).
+ - [About this project](ABOUT.md)
+ - [Original text](corpus/pg15396.txt) from project Gutenberg and my [modified version](corpus/tb.txt)  used in this project.
+ - See the [Makefile](Makefile) for hints if you want to try and run this project yourself.
+
 

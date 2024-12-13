@@ -134,11 +134,13 @@ input {
 }
 
 section.about {
-  max-width: 700px;
+  max-width: 1024px;
   background: rgba(255, 255, 255, 0.5);
-  padding: 0 1rem;
+  padding: 1rem;
   margin: 1rem;
   font-size: 0.8rem;
+  font-family: serif;
+  line-height: 1.2em;
 }
 
 a.about-link {

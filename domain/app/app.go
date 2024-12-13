@@ -41,7 +41,7 @@ func New(cfg *Config) *App {
 	)
 
 	handler.AddRoute("/", app.IndexHandler())
-	handler.AddRoute("/readme", app.AboutHandler())
+	handler.AddRoute("/about", app.AboutHandler())
 	handler.AddRoute("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/assets/icon/favicon.ico", http.StatusMovedPermanently)
 	})

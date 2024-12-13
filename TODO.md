@@ -5,3 +5,4 @@
 - [x] Configure to automatically switch to https
 - [ ] Tweak to move avg words closer to max without increasing min
 - [x] Move to gitlab?
+- [ ] Rename go module to match new repo

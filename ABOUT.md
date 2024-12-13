@@ -4,7 +4,7 @@ This project is an homage to Gertrude Stein's 1914 book of modernist poetry [_Te
 
 The sentences and phrases you'll find here are produced using a very simple [Markov chain](https://en.wikipedia.org/wiki/Markov_chain#Markov_text_generators) fed with the contents of Stein's book.
 
-In the interest of keeping it simple I removed the all-caps section headings and used only the body text. Additionally, the "n-word" appears in the original text once, I chose to replace it with the word "negro".
+In the interest of keeping it simple I removed the all-caps section headings and used only the body text. Additionally, the "n-word" appears in the original text once, I chose to replace it with the word "negro."
 
 You can view the source code for this project on [GitLab](https://gitlab.com/andyinabox/tenderbuttons/-/tree/main?ref_type=heads).
 

@@ -22,32 +22,16 @@ func (a *App) getCSSCustomProperties(sentence string) template.HTML {
 
 	la1, la2, la3 := rng.ComplementaryDegreesTriad()
 
-	var lcSaturation float32 = 50.
-	var lcLightness float32 = 75.
-	var lcStartOpacity float32 = 100.
-	var lcEndOpacity float32 = 30.
-
-	lc1 := params.NewColorHSLA(h1.Value(), lcSaturation, lcLightness, lcStartOpacity)
-	lc2 := params.NewColorHSLA(h1.Value(), lcSaturation, lcLightness, lcEndOpacity)
-	lc3 := params.NewColorHSLA(h2.Value(), lcSaturation, lcLightness, lcStartOpacity)
-	lc4 := params.NewColorHSLA(h2.Value(), lcSaturation, lcLightness, lcEndOpacity)
-	lc5 := params.NewColorHSLA(h3.Value(), lcSaturation, lcLightness, lcStartOpacity)
-	lc6 := params.NewColorHSLA(h3.Value(), lcSaturation, lcLightness, lcEndOpacity)
-
 	d := &cssprops.Properties{
-		"--radial-stop-1": rs1,
+		"--rg-stop-1": rs1,
 
-		"--linear-angle-1": la1,
-		"--linear-color-1": lc1,
-		"--linear-color-2": lc2,
+		"--lg-angle-1": la1,
+		"--lg-angle-2": la2,
+		"--lg-angle-3": la3,
 
-		"--linear-angle-2": la2,
-		"--linear-color-3": lc3,
-		"--linear-color-4": lc4,
-
-		"--linear-angle-3": la3,
-		"--linear-color-5": lc5,
-		"--linear-color-6": lc6,
+		"--lg-hue-1": h1,
+		"--lg-hue-2": h2,
+		"--lg-hue-4": h3,
 	}
 
 	return d.ToHTML()

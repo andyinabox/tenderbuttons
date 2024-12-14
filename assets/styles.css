@@ -125,6 +125,10 @@ input[type='submit'] {
   margin-bottom: 0.25em;
 }
 
+blockquote {
+  margin-left: 1em;
+}
+
 /* about page link */
 a.about-link {
   position: absolute;
@@ -159,5 +163,5 @@ section.about {
   margin: 1rem;
   font-size: 0.8rem;
   font-family: Georgia, serif;
-  line-height: 1.2em;
+  line-height: 1.4em;
 }

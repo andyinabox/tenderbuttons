@@ -9,7 +9,7 @@ import (
 
 	"github.com/charmbracelet/log"
 
-	"gitlab.com/andyinaobox/tenderbuttons/domain/app"
+	"code.andydayton.com/andy/tenderbuttons/domain/app"
 )
 
 //go:embed tmpl/*

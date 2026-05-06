@@ -1,6 +1,6 @@
 package randparams
 
-import "gitlab.com/andyinaobox/tenderbuttons/pkg/params"
+import "code.andydayton.com/andy/tenderbuttons/pkg/params"
 
 func (r *Rand) HSLARandomHue(s, l, a float32) *params.ColorHSLA {
 	h := r.Degrees()

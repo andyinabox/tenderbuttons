@@ -4,6 +4,6 @@ This project is an homage to Gertrude Stein's 1914 book [_Tender Buttons_](https
 
 The sentences and phrases you'll find here are produced using a very simple [Markov chain](https://en.wikipedia.org/wiki/Markov_chain#Markov_text_generators) fed with the contents of Stein's book.
 
-You can view the source code for this project on [GitLab](https://gitlab.com/andyinabox/tenderbuttons/-/tree/main?ref_type=heads).
+You can view the source code for this project [here](https://code.andydayton.com/andy/tenderbuttons).
 
 —[Andy](https://andydayton.com)

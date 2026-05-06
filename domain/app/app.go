@@ -5,8 +5,8 @@ import (
 	"io/fs"
 	"net/http"
 
-	"gitlab.com/andyinaobox/tenderbuttons/pkg/assetshandler"
-	"gitlab.com/andyinaobox/tenderbuttons/pkg/tlsserver"
+	"code.andydayton.com/andy/tenderbuttons/pkg/assetshandler"
+	"code.andydayton.com/andy/tenderbuttons/pkg/tlsserver"
 )
 
 type Config struct {

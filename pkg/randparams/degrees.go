@@ -1,6 +1,6 @@
 package randparams
 
-import "gitlab.com/andyinaobox/tenderbuttons/pkg/params"
+import "code.andydayton.com/andy/tenderbuttons/pkg/params"
 
 func (r *Rand) Degrees() params.Degrees {
 	return params.Degrees(r.Float32() * 360)

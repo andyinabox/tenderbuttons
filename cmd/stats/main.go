@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/log"
-	"gitlab.com/andyinaobox/tenderbuttons/pkg/chains"
+	"code.andydayton.com/andy/tenderbuttons/pkg/chains"
 )
 
 const pathToCorpus = "corpus/tb.txt"

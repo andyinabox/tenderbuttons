@@ -4,9 +4,9 @@ import (
 	"html/template"
 	"strings"
 
-	"gitlab.com/andyinaobox/tenderbuttons/pkg/cssprops"
-	"gitlab.com/andyinaobox/tenderbuttons/pkg/params"
-	"gitlab.com/andyinaobox/tenderbuttons/pkg/randparams"
+	"code.andydayton.com/andy/tenderbuttons/pkg/cssprops"
+	"code.andydayton.com/andy/tenderbuttons/pkg/params"
+	"code.andydayton.com/andy/tenderbuttons/pkg/randparams"
 )
 
 func (a *App) getCSSCustomProperties(sentence string) template.HTML {
